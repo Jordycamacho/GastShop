@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  gast:
+    build: bordados
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:mysql://gast_shop:3306/ecommerce_bordados?createDatabaseIfNotExist=true&serverTimezone=UTC
+      - DB_USER_NAME=root
+      - DB_PASSWORD=012890
+      - EMAIL_USER=jordycamacho225@gmail.com
+      - EMAIL_PASS=kggi bsqn lpps brzw
+      - SP_PUBLIC=pk_test_51OAT2KDjh4GsTIQyj3CKIn1i0riEaRYVc1O9CdBoxtD29Shk0lh0eRiNYkuwwHBR8SnFNhZyGYGjGMl0AaUaFDyV00qJT2LuKR
+      - SP_SECRET=sk_test_51OAT2KDjh4GsTIQyVx1uM7ltpUzAW8uWQCErv2OHQeKkX96uo6c7ZUsH8uHRTAYhmdA9Y3hPIHmvlIFjQ6Q6r4zd00ZONSc2LN
+      - APP_UPLOAD_DIR=/app/images
+    volumes:
+      - gast_images:/app/images
+    restart: always
+    depends_on:
+      gast_shop:
+        condition: service_healthy
+
+  gast_shop:
+    image: mysql:8.0.33 
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=012890
+      - MYSQL_PASSWORD=012890
+      - MYSQL_DATABASE=ecommerce_bordados
+      - MYSQL_ROOT_HOST=%
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - gast_db_data:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+
+volumes:
+  gast_db_data:
+  gast_images:
