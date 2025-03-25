@@ -304,11 +304,18 @@
                         <div class="form-group">
                             <label>Color del hilo*</label>
                             <div class="color-options">
-                                <button type="button" class="color-option" style="background-color: #000000;"
-                                    data-color="Negro" onclick="selectThreadColor('Negro', '#000000')"></button>
-                                <button type="button" class="color-option" style="background-color: #ffffff;"
-                                    data-color="Blanco" onclick="selectThreadColor('Blanco', '#ffffff')"></button>
-
+                                <!-- Colores básicos -->
+                                <button type="button" class="color-option" style="background-color: #000000;" data-color="Negro" onclick="selectThreadColor('Negro', '#000000')"></button>
+                                <button type="button" class="color-option" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="Blanco" onclick="selectThreadColor('Blanco', '#ffffff')"></button>
+                                <button type="button" class="color-option" style="background-color: #ff0000;" data-color="Rojo" onclick="selectThreadColor('Rojo', '#ff0000')"></button>
+                                <button type="button" class="color-option" style="background-color: #0000ff;" data-color="Azul" onclick="selectThreadColor('Azul', '#0000ff')"></button>
+                                <button type="button" class="color-option" style="background-color: #008000;" data-color="Verde" onclick="selectThreadColor('Verde', '#008000')"></button>
+                                <button type="button" class="color-option" style="background-color: #ffff00;" data-color="Amarillo" onclick="selectThreadColor('Amarillo', '#ffff00')"></button>
+                                <button type="button" class="color-option" style="background-color: #ffa500;" data-color="Naranja" onclick="selectThreadColor('Naranja', '#ffa500')"></button>
+                                <button type="button" class="color-option" style="background-color: #800080;" data-color="Morado" onclick="selectThreadColor('Morado', '#800080')"></button>
+                                <button type="button" class="color-option" style="background-color: #ffc0cb;" data-color="Rosa" onclick="selectThreadColor('Rosa', '#ffc0cb')"></button>
+                                <button type="button" class="color-option" style="background-color: #808080;" data-color="Gris" onclick="selectThreadColor('Gris', '#808080')"></button>
+                                <button type="button" class="color-option" style="background-color: #40e0d0;" data-color="Turquesa" onclick="selectThreadColor('Turquesa', '#40e0d0')"></button>
                             </div>
                             <input type="hidden" name="sleeveThreadColor" id="selectedThreadColor">
                         </div>
