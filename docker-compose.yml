@@ -10,13 +10,13 @@ services:
       - DB_URL=jdbc:mysql://gast_shop:3306/ecommerce_bordados?createDatabaseIfNotExist=true&serverTimezone=UTC
       - DB_USER_NAME=root
       - DB_PASSWORD=012890
-      - EMAIL_USER=jordycamacho225@gmail.com
-      - EMAIL_PASS=kggi bsqn lpps brzw
+      - EMAIL_USER=gastboutique@gmail.com
+      - EMAIL_PASS=ykez jobo gdax faij
       - SP_PUBLIC=pk_test_51OAT2KDjh4GsTIQyj3CKIn1i0riEaRYVc1O9CdBoxtD29Shk0lh0eRiNYkuwwHBR8SnFNhZyGYGjGMl0AaUaFDyV00qJT2LuKR
       - SP_SECRET=sk_test_51OAT2KDjh4GsTIQyVx1uM7ltpUzAW8uWQCErv2OHQeKkX96uo6c7ZUsH8uHRTAYhmdA9Y3hPIHmvlIFjQ6Q6r4zd00ZONSc2LN
       - APP_UPLOAD_DIR=/app/images
     volumes:
-      - gast_images:/app/images
+      - ./images:/app/images
     restart: always
     depends_on:
       gast_shop:

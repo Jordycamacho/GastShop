@@ -199,6 +199,7 @@ public class ProductServiceImpl implements ProductService {
 
     public List<Product> getTopSellingProducts() {
         return productRepository.findAll().stream()
+               .filter(product -> !"Personalizar".equals(product.getCategory().getNameCategory()))
                .sorted(Comparator.comparingInt(Product::getSalesCount).reversed())
                .limit(8)
                .collect(Collectors.toList());
@@ -206,8 +207,10 @@ public class ProductServiceImpl implements ProductService {
     }
     
     public List<Product> getRandomProducts() {
-        List<Product> allProducts = productRepository.findAll();
-        Collections.shuffle(allProducts); // Mezcla la lista aleatoriamente
+        List<Product> allProducts = productRepository.findAll().stream()
+                                    .filter(product -> !"Personalizar".equals(product.getCategory().getNameCategory()))
+                                    .collect(Collectors.toList());
+        Collections.shuffle(allProducts);
         return allProducts.stream().limit(8).collect(Collectors.toList());
     }
     

@@ -3,8 +3,11 @@ package com.example.bordados.service.ServiceImpl;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.bordados.service.ImageService;
@@ -16,8 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    private final String  uploadDir = Paths.get("").toAbsolutePath().toString() + "/images/";
-    
+    @Value("${app.upload.dir}")
+    private String uploadDir;
+
     @PostConstruct
     public void init() {
         try {
@@ -27,27 +31,26 @@ public class ImageServiceImpl implements ImageService {
             log.error("No se pudo crear el directorio de imágenes", e);
         }
     }
-    
+
     @Override
     public String saveImage(MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            log.info("No se subió imagen, se usará la imagen por defecto.");
             return getDefaultImage();
         }
 
         try {
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            String filePath = uploadDir + fileName;
-            File directory = new File(uploadDir);
-            if (!directory.exists()) {
-                directory.mkdirs();
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename().replace(" ", "_");
+            Path uploadPath = Paths.get(uploadDir);
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
             }
 
-            Files.copy(file.getInputStream(), Paths.get(filePath));
-            log.info("Imagen guardada en: {}", filePath);
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
             return fileName;
         } catch (IOException e) {
-            log.error("Error al guardar la imagen: {}", e.getMessage());
             throw new RuntimeException("Error al guardar la imagen", e);
         }
     }
@@ -73,5 +76,5 @@ public class ImageServiceImpl implements ImageService {
     public String getDefaultImage() {
         return "default.jpg";
     }
-    
+
 }
