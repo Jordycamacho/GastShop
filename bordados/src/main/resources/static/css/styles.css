@@ -750,8 +750,11 @@ body {
 
 .product-image {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 250px;
+    object-fit: contain; 
+    object-position: center;
+    padding: 10px;
+    background: #f8f8f8;
 }
 
 .product-name {
@@ -1986,16 +1989,26 @@ body {
     /*BESTSELLERS*/
     .bestsellers-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .product-image {
+        height: 210px;
+        object-position: left;
     }
 
     .product-name {
         font-size: var(--font-size-small);
+        padding: 0 10px;
     }
 
     .view-product-btn {
         font-size: 0.875rem;
     }
 
+    .product-card {
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
     /*Barra de la mitad*/
     .customize-content h2 {
         font-size: var(--font-size-medium);
@@ -2199,3 +2212,9 @@ body {
         height: 16px;
     }
 }
+/*
+@media (max-width: 480px) {
+    .product-image {
+        height: 350px;
+    }
+}*/
