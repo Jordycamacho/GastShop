@@ -9,6 +9,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .button_int {
+            all: unset;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -25,9 +35,10 @@
                 <p class="product-description" th:text="${product.description}"></p>
                 <p class="product-price" th:text="${product.price} + '0 $'"></p>
 
-                <form th:if="${product.quantity > 0}" th:action="@{/bordados/carrito/agregar}" method="post" onsubmit="return validateForm()">
+                <form th:if="${product.quantity > 0}" th:action="@{/bordados/carrito/agregar}" method="post"
+                    onsubmit="return validateForm()">
                     <input type="hidden" name="productId" th:value="${product.id}">
-                
+
                     <!-- Cantidad -->
                     <div class="form-group">
                         <label>Cantidad</label>
@@ -38,43 +49,45 @@
                             <button type="button" class="quantity-btn" onclick="updateQuantity(1)">+</button>
                         </div>
                     </div>
-                
+
                     <p th:text="'Disponibles: ' + ${product.quantity}"></p>
-                
+
                     <!-- Elige el color -->
                     <div class="form-group">
                         <label>Elige el color de tu prenda*</label>
                         <div class="color-options">
-                            <button th:each="color : ${product.colors}" th:data-color="${color}" 
-                                    class="color-option" th:style="'background-color: ' + ${color.name()} + ';'"
-                                    onclick="selectColor(event)">
+                            <button th:each="color : ${product.colors}" th:data-color="${color}" class="color-option"
+                                th:style="'background-color: ' + ${color.name()} + ';'" onclick="selectColor(event)">
                             </button>
                         </div>
                         <input type="hidden" name="color" id="selectedColor">
                     </div>
-                
+
                     <!-- Elige tu talla -->
                     <div class="form-group">
                         <label>Elige tu talla*</label>
                         <div class="size-options">
-                            <button th:each="size : ${product.sizes}" th:data-size="${size}" 
-                                    class="size-option" onclick="selectSize(event)">
+                            <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
+                                onclick="selectSize(event)">
                                 [[${size}]]
                             </button>
                         </div>
                         <input type="hidden" name="size" id="selectedSize">
                     </div>
-                
-                    <!-- Botón para agregar al carrito -->
-                    <button type="submit" data-tooltip="Carrito" class="button_cart">
-                        <div class="button-wrapper_cart">
-                            <div class="text_cart">Carrito</div>
-                            <span class="icon_cart">
-                                <svg viewBox="0 0 16 16" class="bi bi-cart2" fill="currentColor" height="16" width="16"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"></path>
-                                </svg>
-                            </span>
+
+                    <button type="submit" data-tooltip="Carrito" class="button_int">
+                        <div class="button_cart">
+                            <div class="button-wrapper_cart">
+                                <div class="text_cart">Carrito</div>
+                                <span class="icon_cart">
+                                    <svg viewBox="0 0 16 16" class="bi bi-cart2" fill="currentColor" height="16"
+                                        width="16" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z">
+                                        </path>
+                                    </svg>
+                                </span>
+                            </div>
                         </div>
                     </button>
                 </form>
@@ -248,7 +261,7 @@
         }
 
         function selectSize(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
             document.getElementById('selectedSize').value = event.target.dataset.size;

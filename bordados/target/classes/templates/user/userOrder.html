@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://js.stripe.com/v3/"></script>
     <style>
-        /* Estilos básicos y neutros */
         main {
             max-width: 80%;
             margin: 20px auto;
@@ -34,7 +33,6 @@
             margin: 5px 0;
         }
 
-        /* Contenedor con dos columnas para desktop */
         .order-summary {
             display: flex;
             flex-wrap: wrap;
@@ -50,19 +48,6 @@
             flex: 1 1 40%;
             padding: 10px;
             border-left: 1px solid #ddd;
-        }
-
-        /* En móvil, se apilan las columnas */
-        @media (max-width: 768px) {
-            .order-summary {
-                flex-direction: column;
-            }
-
-            .payment-section {
-                border-left: none;
-                border-top: 1px solid #ddd;
-                margin-top: 20px;
-            }
         }
 
         table {
@@ -99,7 +84,6 @@
             background: #333;
         }
 
-        /* Estilos para la sección de pago con Stripe */
         #card-element {
             padding: 10px;
             border: 1px solid #ddd;
@@ -118,14 +102,11 @@
             display: none;
         }
 
-
-        /* Estilos para la sección de descuento */
         .discount-section {
             margin: 20px 0;
             display: flex;
             align-items: center;
             gap: 10px;
-            /* Espacio entre elementos */
         }
 
         #discountCode {
@@ -134,14 +115,12 @@
             border-radius: 4px;
             font-size: 14px;
             flex: 1;
-            /* Ocupa el espacio disponible */
             outline: none;
             transition: border-color 0.3s ease;
         }
 
         #discountCode:focus {
             border-color: #000;
-            /* Cambia el color del borde al enfocar */
         }
 
         .discount-section button {
@@ -157,24 +136,12 @@
 
         .discount-section button:hover {
             background-color: #333;
-            /* Efecto hover para el botón */
         }
 
         #discountMessage {
             font-size: 14px;
             margin-left: 10px;
             font-weight: bold;
-        }
-
-        /* Estilos para mensajes de éxito y error */
-        #discountMessage[style*="green"] {
-            color: #28a745;
-            /* Verde para mensajes de éxito */
-        }
-
-        #discountMessage[style*="red"] {
-            color: #dc3545;
-            /* Rojo para mensajes de error */
         }
 
         .policy-link {
@@ -189,6 +156,33 @@
         .policy-link:hover {
             text-decoration: underline;
         }
+
+        @media (max-width: 768px) {
+        /* Ajustes SOLO para móvil: */
+        main {
+            max-width: 100%;  
+            padding: 5px; 
+            margin: 5px auto;
+        }
+
+        .order-details, 
+        .payment-section {
+            padding: 1px;  
+        }
+
+        table {
+            width: 100%;
+            max-width: 100%;
+            display: table;
+            border-collapse: collapse;
+            margin: 0;    
+        }
+
+        th, td {
+            padding: 6px 2px; 
+            font-size: 14px;  
+        }
+    }
     </style>
 </head>
 
