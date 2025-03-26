@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.example.bordados.BordadosApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.926 s -- in com.example.bordados.BordadosApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.15 s -- in com.example.bordados.BordadosApplicationTests
