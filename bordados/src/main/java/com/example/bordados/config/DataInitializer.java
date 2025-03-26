@@ -78,9 +78,9 @@ public class DataInitializer implements CommandLineRunner {
                     .orElseThrow(() -> new IllegalStateException("Admin role not found. Did initialization fail?"));
 
             User adminUser = new User();
-            adminUser.setName("Jordi Camacho");
-            adminUser.setEmail("jordycamacho225@gmail.com");
-            adminUser.setPassword(passwordEncoder.encode("jordy012890"));
+            adminUser.setName("Gast Shop");
+            adminUser.setEmail("gastboutique@gmail.com");
+            adminUser.setPassword(passwordEncoder.encode("Gast012890."));
             adminUser.setRegistrationDate(new Date());
             adminUser.setAddress("narnia");
             adminUser.setType(UserType.ROLE_ADMIN);
