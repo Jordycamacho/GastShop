@@ -1,7 +1,11 @@
 package com.example.bordados.DTOs;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bordados.model.Enums.Color;
 import com.example.bordados.model.Enums.Size;
@@ -28,7 +32,8 @@ public class ProductDTO {
     private String description;
 
     @Builder.Default
-    private String image = "default.jpg";
+    @NotNull(message = "Debe proporcionar al menos una imagen")
+    private List<MultipartFile> images = new ArrayList<>();
     
     @NotNull(message = "La cantidad es obligatoria")
     private int quantity;
@@ -54,4 +59,7 @@ public class ProductDTO {
     @Builder.Default
     private Long subCategoryId = null;
 
+    private List<String> existingImages;
+    private List<MultipartFile> newImages; 
+    private List<String> imagesToDelete;
 }

@@ -1,5 +1,7 @@
 package com.example.bordados.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.example.bordados.model.Enums.Color;
@@ -39,8 +41,10 @@ public class Product {
     @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
-    @NotBlank(message = "La imagen es obligatoria")
-    private String image = "default.jpg";
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_url")
+    private List<String> images = new ArrayList<>();
 
     @NotNull(message = "La cantidad es obligatoria")
     private int quantity;
@@ -74,4 +78,7 @@ public class Product {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int salesCount;
 
+    public String getMainImage() {
+        return !this.images.isEmpty() ? this.images.get(0) : "default.jpg";
+    }
 }
