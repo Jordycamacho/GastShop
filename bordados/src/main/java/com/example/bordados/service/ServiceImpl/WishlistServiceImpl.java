@@ -55,7 +55,7 @@ public class WishlistServiceImpl implements WishlistService {
                         .id(w.getProduct().getId())
                         .name(w.getProduct().getName())
                         .description(w.getProduct().getDescription())
-                        .image(w.getProduct().getImage())
+                        //.image(w.getProduct().getImage())
                         .quantity(w.getProduct().getQuantity())
                         .price(w.getProduct().getPrice())
                         .discount(w.getProduct().getDiscount())

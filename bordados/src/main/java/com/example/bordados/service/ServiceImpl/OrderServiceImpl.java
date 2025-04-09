@@ -219,14 +219,14 @@ public class OrderServiceImpl {
         detail.setColor(dto.getColor());
         detail.setEmbroideryType(dto.getEmbroideryType());
         detail.setFirstEmbroideryPlacement(dto.getFirstEmbroideryPlacement());
-        detail.setFirstEmbroideryFile(imageService.saveImage(dto.getFirstEmbroideryFile()));
+        detail.setFirstEmbroideryFile(imageService.saveImageNormal(dto.getFirstEmbroideryFile()));
         detail.setObservationsFirstEmbroidery(dto.getObservationsFirstEmbroidery());
 
         // Segundo bordado (opcional)
         if (dto.isHasSecondEmbroidery()) {
             detail.setHasSecondEmbroidery(true);
             detail.setSecondEmbroideryPlacement(dto.getSecondEmbroideryPlacement());
-            detail.setSecondEmbroideryFile(imageService.saveImage(dto.getSecondEmbroideryFile()));
+            detail.setSecondEmbroideryFile(imageService.saveImageNormal(dto.getSecondEmbroideryFile()));
             detail.setSecondEmbroideryType(dto.getSecondEmbroideryType());
             detail.setObservationsSecondEmbroidery(dto.getObservationsSecondEmbroidery());
         }

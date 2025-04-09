@@ -45,7 +45,7 @@ public class CustomizedProductDetailsServiceImpl implements CustomizedProductDet
             details.setObservations(dto.getObservations());
 
             if (dto.getFirstEmbroideryFile() != null && !dto.getFirstEmbroideryFile().isEmpty()) {
-                String firstEmbroideryPath = imageService.saveImage(dto.getFirstEmbroideryFile());
+                String firstEmbroideryPath = imageService.saveImageNormal(dto.getFirstEmbroideryFile());
                 details.setFirstEmbroideryFile(firstEmbroideryPath);
             }
 
@@ -56,7 +56,7 @@ public class CustomizedProductDetailsServiceImpl implements CustomizedProductDet
                 details.setObservationsSecondEmbroidery(dto.getObservationsSecondEmbroidery());
 
                 if (dto.getSecondEmbroideryFile() != null && !dto.getSecondEmbroideryFile().isEmpty()) {
-                    String secondEmbroideryPath = imageService.saveImage(dto.getSecondEmbroideryFile());
+                    String secondEmbroideryPath = imageService.saveImageNormal(dto.getSecondEmbroideryFile());
                     details.setSecondEmbroideryFile(secondEmbroideryPath);
                 }
             }
@@ -91,9 +91,9 @@ public class CustomizedProductDetailsServiceImpl implements CustomizedProductDet
             CustomizedProductDetails details = customizedProductDetailsRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Detalles no encontrados"));
 
-            imageService.deleteImage(details.getFirstEmbroideryFile());
+            imageService.deleteImageNormal(details.getFirstEmbroideryFile());
             if (details.isHasSecondEmbroidery()) {
-                imageService.deleteImage(details.getSecondEmbroideryFile());
+                imageService.deleteImageNormal(details.getSecondEmbroideryFile());
             }
 
             customizedProductDetailsRepository.deleteById(id);

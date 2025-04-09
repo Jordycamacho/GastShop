@@ -29,18 +29,23 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartDTO> getCartByUserId(Long userId) {
-        return cartRepository.findByUserId(userId).stream().map(cart -> 
-            CartDTO.builder()
-                .id(cart.getId())
-                .productId(cart.getProduct().getId())
-                .productName(cart.getProduct().getName())
-                .quantity(cart.getQuantity())
-                .size(cart.getSize())
-                .color(cart.getColor())
-                .price(cart.getProduct().getPrice())
-                .image(cart.getProduct().getImage())
-                .build()
-        ).collect(Collectors.toList());
+        return cartRepository.findByUserId(userId).stream()
+            .map(cart -> {
+                Product product = cart.getProduct();
+                return CartDTO.builder()
+                    .id(cart.getId())
+                    .productId(product.getId())
+                    .productName(product.getName())
+                    .quantity(cart.getQuantity())
+                    .size(cart.getSize())
+                    .color(cart.getColor())
+                    .price(product.getPrice())
+                    .image(!product.getImages().isEmpty() 
+                          ? product.getImages().get(0) 
+                          : "default.jpg")
+                    .build();
+            })
+            .collect(Collectors.toList());
     }
 
     @Override
