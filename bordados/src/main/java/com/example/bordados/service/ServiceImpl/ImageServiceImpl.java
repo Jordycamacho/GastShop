@@ -6,6 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,7 +36,79 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public String saveImage(MultipartFile file) {
+    public List<String> saveImages(List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) {
+            return Collections.singletonList(getDefaultImage());
+        }
+
+        List<String> savedImages = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (file != null && !file.isEmpty()) {
+                try {
+                    String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename().replace(" ", "_");
+                    Path uploadPath = Paths.get(uploadDir);
+
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+
+                    Path filePath = uploadPath.resolve(fileName);
+                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                    savedImages.add(fileName);
+                } catch (IOException e) {
+                    log.error("Error al guardar la imagen: {}", e.getMessage());
+                    // Continuar con las siguientes imágenes
+                }
+            }
+        }
+
+        if (savedImages.isEmpty()) {
+            savedImages.add(getDefaultImage());
+        }
+
+        return savedImages;
+    }
+
+    @Override
+    public void deleteImages(List<String> fileNames) {
+        if (fileNames == null || fileNames.isEmpty()) {
+            return;
+        }
+
+        for (String fileName : fileNames) {
+            deleteImageFile(fileName);
+        }
+    }
+
+    private void deleteImageFile(String fileName) {
+        try {
+            Path filePath = Paths.get(uploadDir).resolve(fileName).normalize();
+            File file = filePath.toFile();
+            
+            Path uploadPath = Paths.get(uploadDir).normalize().toAbsolutePath();
+            if (!filePath.toAbsolutePath().startsWith(uploadPath)) {
+                log.warn("Intento de eliminar archivo fuera del directorio permitido: {}", filePath);
+                return;
+            }
+
+            if (file.exists() && !fileName.equals(getDefaultImage())) {
+                if (file.delete()) {
+                    log.info("Imagen eliminada: {}", filePath);
+                } else {
+                    log.warn("No se pudo eliminar la imagen: {}", filePath);
+                    System.gc();
+                    if (file.delete()) {
+                        log.info("Imagen eliminada en segundo intento: {}", filePath);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error al eliminar la imagen {}: {}", fileName, e.getMessage());
+        }
+    }
+
+    @Override
+    public String saveImageNormal(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return getDefaultImage();
         }
@@ -56,7 +131,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void deleteImage(String fileName) {
+    public void deleteImageNormal(String fileName) {
         try {
             String filePath = uploadDir + fileName;
             File file = new File(filePath);
@@ -76,5 +151,4 @@ public class ImageServiceImpl implements ImageService {
     public String getDefaultImage() {
         return "default.jpg";
     }
-
 }
