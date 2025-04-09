@@ -1,12 +1,18 @@
 package com.example.bordados.service;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageService {
     
-    String saveImage(MultipartFile file);
+    List<String> saveImages(List<MultipartFile> files);
 
-    void deleteImage(String fileName);
+    void deleteImages(List<String> fileNames);
+
+    String saveImageNormal(MultipartFile file);
+
+    public void deleteImageNormal(String fileName);
 
     String getDefaultImage();
 }

@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByDiscountGreaterThan(double discount);
 
-    @Query("SELECT p.image FROM Product p WHERE p.id = :productId")
-    String findImageById(@Param("productId") Long productId);
+    @Query("SELECT p.images FROM Product p WHERE p.id = :productId")
+    List<String> findImagesById(@Param("productId") Long productId);
 
 }

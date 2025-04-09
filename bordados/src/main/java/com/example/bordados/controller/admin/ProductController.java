@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
 @Controller
 @RequestMapping("/admin/productos")
 @Tag(name = "ProductController", description = "Controlador para gestionar los productos")
@@ -38,7 +37,8 @@ public class ProductController {
     private final CategoryServiceImpl categoryService;
     private final SubCategoryServiceImpl subCategoryService;
 
-    public ProductController(ProductServiceImpl productService, CategoryServiceImpl categoryService, SubCategoryServiceImpl subCategoryService) {
+    public ProductController(ProductServiceImpl productService, CategoryServiceImpl categoryService,
+            SubCategoryServiceImpl subCategoryService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.subCategoryService = subCategoryService;
@@ -65,26 +65,22 @@ public class ProductController {
     @GetMapping("/crear")
     public String showCreateProductForm(Model model) {
         model.addAttribute("productDTO", new ProductDTO());
-        model.addAttribute("categories", categoryService.getAllCategories());  // Cargar categorías
-        model.addAttribute("subCategories", subCategoryService.getAllSubCategories());  // Cargar subcategorías
-        return "admin/product/createProduct";  
+        model.addAttribute("categories", categoryService.getAllCategories()); // Cargar categorías
+        model.addAttribute("subCategories", subCategoryService.getAllSubCategories()); // Cargar subcategorías
+        return "admin/product/createProduct";
     }
 
     @PostMapping("/crear")
     public String createProduct(@ModelAttribute("productDTO") @Valid ProductDTO productDTO,
-                                BindingResult result,
-                                @RequestParam("imageFile") MultipartFile imageFile,
-                                RedirectAttributes redirectAttributes,
-                                Model model) {
-        if (result.hasErrors()) {
-            log.warn("Errores en la validación del formulario de creación de producto");
-            model.addAttribute("categories", categoryService.getAllCategories());
-            model.addAttribute("subCategories", subCategoryService.getAllSubCategories());
-            return "admin/product/createProduct";  
+            BindingResult result,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+        if (productDTO.getImages().size() > 6) {
+            result.rejectValue("images", "max.images", "Máximo 6 imágenes permitidas");
         }
 
         try {
-            productService.createProduct(productDTO, imageFile);
+            productService.createProduct(productDTO);
             redirectAttributes.addFlashAttribute("success", "Producto creado exitosamente");
             log.info("Producto creado con éxito: {}", productDTO.getName());
         } catch (Exception e) {
@@ -100,6 +96,7 @@ public class ProductController {
         try {
             Product product = productService.getProductById(id);
             ProductDTO productDTO = productService.convertToDTO(product);
+            productDTO.setExistingImages(product.getImages());
             model.addAttribute("productDTO", productDTO);
             model.addAttribute("id", id);
             model.addAttribute("categories", categoryService.getAllCategories());
@@ -116,19 +113,49 @@ public class ProductController {
 
     @PostMapping("/editar/{id}")
     public String updateProduct(@PathVariable Long id,
-                                @ModelAttribute("productDTO") @Valid ProductDTO productDTO,
-                                BindingResult result,
-                                @RequestParam("imageFile") MultipartFile imageFile,
-                                RedirectAttributes redirectAttributes,
-                                Model model) {
+            @ModelAttribute("productDTO") @Valid ProductDTO productDTO,
+            BindingResult result,
+            @RequestParam(value = "imagesToDelete", required = false) List<String> imagesToDelete,
+            @RequestParam(value = "newImages", required = false) List<MultipartFile> newImages,
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
         try {
-            productService.updateProduct(id, productDTO, imageFile);
+            productDTO.setImagesToDelete(imagesToDelete);
+            productDTO.setNewImages(newImages);
+
+            Product currentProduct = productService.getProductById(id);
+
+            int currentImages = currentProduct.getImages().size();
+            int imagesToDeleteCount = imagesToDelete != null ? imagesToDelete.size() : 0;
+            int remainingImages = currentImages - imagesToDeleteCount;
+
+            int newImagesCount = newImages != null ? newImages.size() : 0;
+            int totalImages = remainingImages + newImagesCount;
+
+            if (totalImages > 6) {
+                result.rejectValue("newImages", "max.total.images",
+                        "Máximo 6 imágenes permitidas. Total actual: " + totalImages);
+                model.addAttribute("categories", categoryService.getAllCategories());
+                model.addAttribute("subCategories", subCategoryService.getAllSubCategories());
+                return "admin/product/editProduct";
+            }
+
+            if (totalImages < 1) {
+                result.rejectValue("newImages", "min.images",
+                        "Debe tener al menos 1 imagen");
+                model.addAttribute("categories", categoryService.getAllCategories());
+                model.addAttribute("subCategories", subCategoryService.getAllSubCategories());
+                return "admin/product/editProduct";
+            }
+
+            productService.updateProduct(id, productDTO);
             redirectAttributes.addFlashAttribute("success", "Producto actualizado exitosamente");
             log.info("Producto con ID {} actualizado con éxito", id);
         } catch (Exception e) {
             log.error("Error al actualizar producto", e);
-            redirectAttributes.addFlashAttribute("error", "Error al actualizar el producto");
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al actualizar el producto: " + e.getMessage());
         }
 
         return "redirect:/admin/productos";
@@ -142,22 +169,12 @@ public class ProductController {
             log.info("Producto con ID {} eliminado con éxito", id);
         } catch (Exception e) {
             log.error("Error al eliminar producto", e);
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar el producto");
+            String errorMessage = e.getMessage().contains("eliminar") ? e.getMessage() : "Error al eliminar el producto";
+            redirectAttributes.addFlashAttribute("error", errorMessage);
+            redirectAttributes.addFlashAttribute("errorDetail", "ID del producto: " + id);
         }
 
         return "redirect:/admin/productos";
     }
 
-    @GetMapping("/discounts")
-    public String showDiscountedProducts(Model model) {
-        try {
-            List<Product> discountedProducts = productService.getDiscountedProducts();
-            model.addAttribute("discountedProducts", discountedProducts);
-            log.info("Mostrando productos con descuentos");
-        } catch (Exception e) {
-            log.error("Error al mostrar productos con descuentos", e);
-            model.addAttribute("error", "No se pudo cargar los productos con descuentos.");
-        }
-        return "admin/product/discounts";
-    }
 }

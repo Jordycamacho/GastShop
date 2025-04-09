@@ -1,17 +1,14 @@
 package com.example.bordados.service;
 
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
-
 import com.example.bordados.DTOs.ProductDTO;
 import com.example.bordados.model.Product;
 
 public interface ProductService {
 
-    Product createProduct(ProductDTO productDTO, MultipartFile imageFile);
+    Product createProduct(ProductDTO productDTO);
 
-    Product updateProduct(Long id, ProductDTO productDetails, MultipartFile imageFile);
+    Product updateProduct(Long id, ProductDTO productDetails);
 
     Product getProductById(Long id);
     
