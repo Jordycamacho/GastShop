@@ -81,9 +81,12 @@
 
         <!-- Imagen -->
         <div class="mb-3">
-            <label for="image" class="form-label">Imagen del Producto</label>
-            <input type="file" id="image" name="imageFile" class="form-control">
-            <small class="form-text text-muted">Deje vacío si no desea cambiar la imagen.</small>
+            <label for="image" class="form-label">Imagenes del Producto (Maximo 6)</label>
+            <input type="file" id="image" name="images" class="form-control" multiple accept="image/*" required th:field="*{images}">
+            <small class="form-text text-muted">Seleccione entre 1 y 6 imágenes. La primera será la imagen principal.</small>
+            <div th:if="${#fields.hasErrors('images')}" class="invalid-feedback d-block">
+                <span th:each="err : ${#fields.errors('images')}" th:text="${err}"></span>
+            </div>
         </div>
 
         <!-- Botones -->

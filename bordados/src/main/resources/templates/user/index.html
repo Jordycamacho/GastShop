@@ -21,7 +21,7 @@
                 <a th:each="product : ${customizableProducts}"
                     th:href="@{'/bordados/producto/personalizar/' + ${product.id}}" class="collection-item">
                     <div class="collection-image">
-                        <img th:src="@{'/images/' + ${product.image}}" th:alt="${product.name}">
+                        <img th:src="@{'/images/' + product.images[0]}" th:alt="${product.name}">
                         <div class="collection-name" th:text="${product.name}"></div>
                     </div>
                 </a>
@@ -37,7 +37,8 @@
                         th:attr="onclick=|window.location.href='@{/bordados/wishlist/add/{id}(id=${product.id})}'|">
                         ❤️
                     </button>
-                    <img th:src="@{'/images/' + ${product.image}}" th:alt="${product.name}" class="product-image">
+                    <img th:src="@{'/images/' + (product.images.size() > 0 ? product.images[0] : 'default.jpg')}"
+                        th:alt="${product.name}" class="product-image">
                     <h3 class="product-name" th:text="${product.name}"></h3>
                     <p class="product-price">
                         $<span th:text="${product.price}"></span>
