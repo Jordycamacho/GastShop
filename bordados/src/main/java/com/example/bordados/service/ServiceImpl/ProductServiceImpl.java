@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.example.bordados.DTOs.ProductDTO;
 import com.example.bordados.model.Product;
 import com.example.bordados.repository.CategoryRepository;
@@ -38,11 +36,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(ProductDTO productDTO, MultipartFile imageFile) {
+    public Product createProduct(ProductDTO productDTO) {
         try {
+
+            if (productDTO.getImages() == null || productDTO.getImages().isEmpty()) {
+                throw new IllegalArgumentException("Debe proporcionar al menos una imagen");
+            }
+            if (productDTO.getImages().size() > 6) {
+                throw new IllegalArgumentException("No se pueden subir más de 6 imágenes");
+            }
+
+            List<String> savedImages = imageService.saveImages(productDTO.getImages());
             Product product = convertToEntity(productDTO);
-            String imageName = imageService.saveImage(imageFile);
-            product.setImage(imageName);
+            product.setImages(savedImages);
+            product.setSalesCount(0);
             Product savedProduct = productRepository.save(product);
             log.info("Producto creado: {}", savedProduct.getId());
             return savedProduct;
@@ -53,40 +60,54 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long id, ProductDTO productDetails, MultipartFile imageFile) {
-        try {
-            Product existingProduct = productRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+    @Transactional
+    public Product updateProduct(Long id, ProductDTO productDTO) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
 
-            // Eliminar imagen anterior si se sube una nueva
-            if (imageFile != null && !imageFile.isEmpty()) {
-                imageService.deleteImage(existingProduct.getImage());
-                existingProduct.setImage(imageService.saveImage(imageFile));
+        if (productDTO.getImagesToDelete() != null && !productDTO.getImagesToDelete().isEmpty()) {
+            if (productDTO.getImagesToDelete().size() >= existingProduct.getImages().size()) {
+                throw new IllegalArgumentException("No puedes eliminar todas las imágenes");
             }
 
-            existingProduct.setName(productDetails.getName());
-            existingProduct.setDescription(productDetails.getDescription());
-            existingProduct.setPrice(productDetails.getPrice());
-            existingProduct.setQuantity(productDetails.getQuantity());
-            existingProduct.setSizes(new HashSet<>(productDetails.getSizes()));
-            existingProduct.setColors(new HashSet<>(productDetails.getColors()));
-            existingProduct.setDiscount(productDetails.getDiscount());
-            existingProduct.setCategory(categoryRepository.findById(productDetails.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada")));
-            if (productDetails.getSubCategoryId() != null) {
-                existingProduct.setSubCategory(subCategoryRepository.findById(productDetails.getSubCategoryId())
-                        .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada")));
-            } else {
-                existingProduct.setSubCategory(null);
-            }
-
-            Product updatedProduct = productRepository.save(existingProduct);
-            log.info("Producto actualizado: {}", updatedProduct.getId());
-            return updatedProduct;
-        } catch (Exception e) {
-            log.error("Error al actualizar producto: {}", e.getMessage());
-            throw new RuntimeException("Error al actualizar producto", e);
+            imageService.deleteImages(productDTO.getImagesToDelete());
+            existingProduct.getImages().removeAll(productDTO.getImagesToDelete());
         }
+
+        if (productDTO.getNewImages() != null && !productDTO.getNewImages().isEmpty()) {
+            List<String> savedImages = imageService.saveImages(productDTO.getNewImages());
+            existingProduct.getImages().addAll(savedImages);
+
+            if (existingProduct.getImages().size() > 6) {
+                imageService.deleteImages(savedImages);
+                throw new IllegalArgumentException("No se pueden tener más de 6 imágenes");
+            }
+        }
+
+        if (existingProduct.getImages().isEmpty()) {
+            throw new IllegalArgumentException("El producto debe tener al menos 1 imagen");
+        }
+
+        updateProductFields(existingProduct, productDTO);
+
+        Product updatedProduct = productRepository.save(existingProduct);
+        log.info("Producto actualizado: {}", updatedProduct.getId());
+        return updatedProduct;
+    }
+
+    private void updateProductFields(Product product, ProductDTO dto) {
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setQuantity(dto.getQuantity());
+        product.setSizes(new HashSet<>(dto.getSizes()));
+        product.setColors(new HashSet<>(dto.getColors()));
+        product.setDiscount(dto.getDiscount());
+        product.setCategory(categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada")));
+        product.setSubCategory(dto.getSubCategoryId() != null
+                ? subCategoryRepository.findById(dto.getSubCategoryId()).orElse(null)
+                : null);
     }
 
     @Override
@@ -115,16 +136,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
         try {
             Product product = productRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
-            imageService.deleteImage(product.getImage());
-            productRepository.deleteById(id);
-            log.info("Producto eliminado: {}", id);
+            
+            if (product.getImages() != null && !product.getImages().isEmpty()) {
+                imageService.deleteImages(product.getImages());
+                log.info("Eliminadas {} imágenes físicas del producto ID: {}", product.getImages().size(), id);
+            }
+            
+            productRepository.delete(product);
+            log.info("Producto eliminado completamente: {}", id);
         } catch (Exception e) {
-            log.error("Error al eliminar producto: {}", e.getMessage());
-            throw new RuntimeException("Error al eliminar producto", e);
+            log.error("Error al eliminar producto ID {}: {}", id, e.getMessage());
+            throw new RuntimeException("Error al eliminar producto: " + e.getMessage(), e);
         }
     }
 
@@ -160,6 +187,7 @@ public class ProductServiceImpl implements ProductService {
             product.setSubCategory(subCategoryRepository.findById(dto.getSubCategoryId())
                     .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada")));
         }
+        product.setSalesCount(0);
         return product;
     }
 
@@ -186,7 +214,7 @@ public class ProductServiceImpl implements ProductService {
                 .colors(new HashSet<>(product.getColors()))
                 .categoryId(product.getCategory().getIdCategory())
                 .subCategoryId(product.getSubCategory() != null ? product.getSubCategory().getIdSubcategory() : null)
-                .image(product.getImage())
+                .existingImages(product.getImages())
                 .build();
     }
 
@@ -199,19 +227,20 @@ public class ProductServiceImpl implements ProductService {
 
     public List<Product> getTopSellingProducts() {
         return productRepository.findAll().stream()
-               .filter(product -> !"Personalizar".equals(product.getCategory().getNameCategory()))
-               .sorted(Comparator.comparingInt(Product::getSalesCount).reversed())
-               .limit(8)
-               .collect(Collectors.toList());
-            
+                .filter(product -> !"Personalizar".equals(product.getCategory().getNameCategory()))
+                .filter(product -> !product.getImages().isEmpty())
+                .sorted(Comparator.comparingInt(Product::getSalesCount).reversed())
+                .limit(8)
+                .collect(Collectors.toList());
     }
-    
+
     public List<Product> getRandomProducts() {
         List<Product> allProducts = productRepository.findAll().stream()
-                                    .filter(product -> !"Personalizar".equals(product.getCategory().getNameCategory()))
-                                    .collect(Collectors.toList());
+                .filter(product -> !"Personalizar".equals(product.getCategory().getNameCategory()))
+                .filter(product -> !product.getImages().isEmpty())
+                .collect(Collectors.toList());
         Collections.shuffle(allProducts);
         return allProducts.stream().limit(8).collect(Collectors.toList());
     }
-    
+
 }
