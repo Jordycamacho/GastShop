@@ -73,7 +73,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createAdminUser() {
-        if (userRepository.findUserByEmail("jordycamacho225@gmail.com").isEmpty()) {
+        if (userRepository.findUserByEmail("gastboutique@gmail.com").isEmpty()) {
             Role adminRole = roleRepository.findByRoleEnum(RoleEnum.ADMIN)
                     .orElseThrow(() -> new IllegalStateException("Admin role not found. Did initialization fail?"));
 
@@ -90,8 +90,23 @@ public class DataInitializer implements CommandLineRunner {
             adminUser.setAccountNoLocked(true);
             adminUser.setCredentialNoExpired(true);
             adminUser.setRoles(Set.of(adminRole));
+
+            User adminUserOther = new User();
+            adminUserOther.setName("Gast Shop");
+            adminUserOther.setEmail("jordycamacho225@gmail.com");
+            adminUserOther.setPassword(passwordEncoder.encode("Jordy012890."));
+            adminUserOther.setRegistrationDate(new Date());
+            adminUserOther.setAddress("narnia");
+            adminUserOther.setType(UserType.ROLE_ADMIN);
+            adminUserOther.setAffiliateCode("ADMIN002");
+            adminUserOther.setEnabled(true);
+            adminUserOther.setAccountNoExpired(true);
+            adminUserOther.setAccountNoLocked(true);
+            adminUserOther.setCredentialNoExpired(true);
+            adminUserOther.setRoles(Set.of(adminRole));
             
             userRepository.save(adminUser);
+            userRepository.save(adminUserOther);
         }
     }
 }
