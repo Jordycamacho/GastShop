@@ -1,7 +1,5 @@
 package com.example.bordados.DTOs;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,44 +20,38 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
-
     private Long id;
     
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank
     private String name;
-
-    @NotBlank(message = "La descripción es obligatoria")
+    
+    @NotBlank
     private String description;
 
-    @Builder.Default
-    @NotNull(message = "Debe proporcionar al menos una imagen")
-    private List<MultipartFile> images = new ArrayList<>();
+    private List<MultipartFile> images;
     
-    @NotNull(message = "La cantidad es obligatoria")
-    private int quantity;
-
-    @NotNull(message = "El precio es obligatorio")
-    private double price;
-
-    @Builder.Default
     @NotNull
-    private double discount = 0.0;
-
+    private Integer quantity;
+    
+    @NotNull
+    private Double price;
+    
     @Builder.Default
-    @NotNull(message = "La talla es obligatoria")
-    private Set<Size> sizes = new HashSet<>();
-
-    @Builder.Default
-    @NotNull(message = "El color es obligatorio")
-    private Set<Color> colors = new HashSet<>();
-
-    @NotNull(message = "La categoría es obligatoria")
+    private Double discount = 0.0;
+    
+    @NotNull
+    private Set<Size> sizes;
+    
+    @NotNull
+    private Set<Color> colors;
+    
+    @NotNull
     private Long categoryId;
-
-    @Builder.Default
-    private Long subCategoryId = null;
-
+    
+    private Long subCategoryId;
+    
+    // Solo para edición
     private List<String> existingImages;
-    private List<MultipartFile> newImages; 
+    private List<MultipartFile> newImages;
     private List<String> imagesToDelete;
 }

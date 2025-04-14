@@ -41,7 +41,7 @@ public class Product {
     @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     private List<String> images = new ArrayList<>();
