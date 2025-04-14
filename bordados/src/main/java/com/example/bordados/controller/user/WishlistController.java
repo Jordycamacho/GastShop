@@ -39,8 +39,7 @@ public class WishlistController {
 
     @GetMapping("/remove/{id}")
     public String removeFromWishlist(@PathVariable("id") Long productId) {
-        Long userId = userService.getCurrentUser().getId();
-        wishlistService.removeFromWishlist(userId, productId);
+        wishlistService.removeFromWishlist(productId);
         return "redirect:/bordados/wishlist";
     }
 

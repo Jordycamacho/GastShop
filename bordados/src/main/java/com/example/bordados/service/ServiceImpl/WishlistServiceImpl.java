@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.bordados.DTOs.ProductDTO;
+import com.example.bordados.DTOs.WishlistProductDTO;
 import com.example.bordados.model.Product;
 import com.example.bordados.model.User;
 import com.example.bordados.model.Wishlist;
@@ -14,6 +14,8 @@ import com.example.bordados.repository.ProductRepository;
 import com.example.bordados.repository.UserRepository;
 import com.example.bordados.repository.WishlistRepository;
 import com.example.bordados.service.WishlistService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class WishlistServiceImpl implements WishlistService {
@@ -30,41 +32,52 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public void addToWishlist(Long productId) {
         User user = userService.getCurrentUser();
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-        Wishlist wishlist = new Wishlist();
-        wishlist.setUser(user);
-        wishlist.setProduct(product);
-
+        Wishlist wishlist = Wishlist.builder()
+                .user(user)
+                .product(product)
+                .build();
         wishlistRepository.save(wishlist);
     }
 
     @Override
-    public void removeFromWishlist(Long userId, Long productId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Product product = productRepository.findById(productId).orElseThrow();
+    @Transactional
+    public void removeFromWishlist(Long productId) {
+        User user = userService.getCurrentUser();
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
         wishlistRepository.findByUserAndProduct(user, product)
-                .ifPresent(wishlistRepository::delete);
+                .ifPresentOrElse(
+                        wishlistRepository::delete,
+                        () -> {
+                            throw new RuntimeException("Producto no encontrado en tu lista de deseos");
+                        });
     }
 
     @Override
-    public List<ProductDTO> getWishlistByUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        return wishlistRepository.findByUser(user).stream()
-                .map(w -> ProductDTO.builder()
-                        .id(w.getProduct().getId())
-                        .name(w.getProduct().getName())
-                        .description(w.getProduct().getDescription())
-                        //.image(w.getProduct().getImage())
-                        .quantity(w.getProduct().getQuantity())
-                        .price(w.getProduct().getPrice())
-                        .discount(w.getProduct().getDiscount())
-                        .sizes(w.getProduct().getSizes())
-                        .colors(w.getProduct().getColors())
-                        .categoryId(w.getProduct().getCategory().getIdCategory())
-                        .subCategoryId(w.getProduct().getSubCategory() != null ? w.getProduct().getSubCategory().getIdSubcategory() : null)
-                        .build())
+    public List<WishlistProductDTO> getWishlistByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        List<Wishlist> wishlists = wishlistRepository.findByUser(user);
+        
+        return wishlists.stream()
+                .map(wishlist -> convertToWishlistDTO(wishlist.getProduct()))
                 .collect(Collectors.toList());
     }
-}
 
+    private WishlistProductDTO convertToWishlistDTO(Product product) {
+        return WishlistProductDTO.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .imagePaths(product.getImages())
+                .price(product.getPrice())
+                .discount(product.getDiscount())
+
+                .build();
+    }
+}
