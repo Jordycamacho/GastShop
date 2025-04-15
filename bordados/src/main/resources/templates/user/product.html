@@ -7,6 +7,7 @@
     <title>GAST</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -17,17 +18,140 @@
             margin: 0 auto;
             text-align: center;
         }
+
+        .product-gallery {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            background: #f9f9f9;
+        }
+
+        .swiper-wrapper {
+            align-items: center;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .swiper-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        /* Navegación */
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Paginación */
+        .swiper-pagination-bullet {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: #fff;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* Responsive seguro */
+        @media (max-width: 768px) {
+            .swiper {
+                height: 300px;
+                /* altura fija más baja para móvil */
+            }
+
+            .swiper-button-next,
+            .swiper-button-prev {
+                width: 30px;
+                height: 30px;
+            }
+
+            .swiper-button-next::after,
+            .swiper-button-prev::after {
+                font-size: 16px;
+            }
+
+            .product-form {
+                padding: 20px;
+            }
+            .swiper-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+        }
     </style>
+
 
 </head>
 
 <body>
-    <header th:insert="~{user/templateUser.html::nav_user_home}"></header>
+    <header th:insert="~{user/templateUser.html::nav_user}"></header>
 
     <main>
         <section class="product-display">
-            <div class="product-image">
-                <img th:src="@{'/images/' + ${product.image}}" alt="Producto" class="product-image">
+            <!-- Galería de imágenes -->
+            <div class="product-gallery">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" th:each="image : ${product.images}">
+                            <img th:src="@{'/images/' + ${image}}" th:alt="${product.name}"
+                                onerror="this.src='/images/default.jpg'">
+                        </div>
+                    </div>
+                    <!-- Controles -->
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
             </div>
 
             <div class="product-form">
@@ -243,6 +367,50 @@
     </main>
 
     <footer class="footer" th:insert="~{user/templateUser.html::footer}"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicialización del carrusel
+            const swiper = new Swiper('.swiper', {
+                // Configuración básica
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+
+                // Efectos
+                effect: 'slide',
+                speed: 600,
+                grabCursor: true,
+
+                // Paginación
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+
+                // Navegación
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+
+                // Eventos
+                on: {
+                    init: function () {
+                        console.log('Carrusel inicializado correctamente');
+                    },
+                }
+            });
+
+            // Pausar al interactuar
+            swiper.el.addEventListener('mouseenter', () => swiper.autoplay.stop());
+            swiper.el.addEventListener('mouseleave', () => swiper.autoplay.start());
+        });
+    </script>
     <script>
         function updateQuantity(change) {
             let quantityInput = document.getElementById('quantity');
