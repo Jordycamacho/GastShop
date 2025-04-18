@@ -15,12 +15,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.bordados.DTOs.CategorySubCategoryDTO;
 import com.example.bordados.DTOs.ProductDTO;
 import com.example.bordados.model.Product;
+import com.example.bordados.service.CollectionService;
 import com.example.bordados.service.ServiceImpl.CategoryServiceImpl;
 import com.example.bordados.service.ServiceImpl.ProductServiceImpl;
 import com.example.bordados.service.ServiceImpl.SubCategoryServiceImpl;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/admin/productos")
 @Tag(name = "ProductController", description = "Controlador para gestionar los productos")
 public class ProductController {
@@ -36,13 +39,7 @@ public class ProductController {
     private final ProductServiceImpl productService;
     private final CategoryServiceImpl categoryService;
     private final SubCategoryServiceImpl subCategoryService;
-
-    public ProductController(ProductServiceImpl productService, CategoryServiceImpl categoryService,
-            SubCategoryServiceImpl subCategoryService) {
-        this.productService = productService;
-        this.categoryService = categoryService;
-        this.subCategoryService = subCategoryService;
-    }
+    private final CollectionService collectionService;
 
     @ModelAttribute("categoriesWithSub")
     public List<CategorySubCategoryDTO> getCategoriesWithSubCategories() {
@@ -65,8 +62,9 @@ public class ProductController {
     @GetMapping("/crear")
     public String showCreateProductForm(Model model) {
         model.addAttribute("productDTO", new ProductDTO());
-        model.addAttribute("categories", categoryService.getAllCategories()); // Cargar categorías
-        model.addAttribute("subCategories", subCategoryService.getAllSubCategories()); // Cargar subcategorías
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("subCategories", subCategoryService.getAllSubCategories());
+        model.addAttribute("collections", collectionService.getAllCollections());
         return "admin/product/createProduct";
     }
 
@@ -101,6 +99,7 @@ public class ProductController {
             model.addAttribute("id", id);
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("subCategories", subCategoryService.getAllSubCategories());
+            model.addAttribute("collections", collectionService.getAllCollections());
             log.info("Mostrando formulario de edición para el producto con ID: {}", id);
         } catch (Exception e) {
             log.error("Error al cargar el producto para editar", e);

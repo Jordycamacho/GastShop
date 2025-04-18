@@ -74,6 +74,14 @@ public class UserController {
         model.addAttribute("products", products);
         return "user/products";
     }
+
+    @GetMapping("/colecciones/{id}")
+    public String getProductsByCollection(@PathVariable Long id, Model model) {
+        List<Product> products = productService.getProductsByCollection(id);
+        model.addAttribute("products", products);
+        return "user/products";
+    }
+
     
     @GetMapping("/login")
     public String getLogin(@RequestParam(value = "error", required = false) String error,

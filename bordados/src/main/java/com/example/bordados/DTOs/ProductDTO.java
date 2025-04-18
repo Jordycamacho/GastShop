@@ -49,6 +49,8 @@ public class ProductDTO {
     private Long categoryId;
     
     private Long subCategoryId;
+
+    private Long  collectionId;
     
     // Solo para edición
     private List<String> existingImages;

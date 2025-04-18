@@ -18,6 +18,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findBySubCategoryIdSubcategory(Long idSubcategory);
 
+    List<Product> findByCollectionId(Long collectionId);
+
     List<Product> findByDiscountGreaterThan(double discount);
 
     @Query("SELECT p.images FROM Product p WHERE p.id = :productId")

@@ -10,31 +10,28 @@ import org.springframework.stereotype.Service;
 import com.example.bordados.DTOs.ProductDTO;
 import com.example.bordados.model.Product;
 import com.example.bordados.repository.CategoryRepository;
+import com.example.bordados.repository.CollectionRepository;
 import com.example.bordados.repository.ProductRepository;
 import com.example.bordados.repository.SubCategoryRepository;
 import com.example.bordados.service.ProductService;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @Transactional
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final ImageServiceImpl imageService;
+    private final CollectionRepository collectionRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, ImageServiceImpl imageService,
-            CategoryRepository categoryRepository, SubCategoryRepository subCategoryRepository) {
-        this.productRepository = productRepository;
-        this.imageService = imageService;
-        this.categoryRepository = categoryRepository;
-        this.subCategoryRepository = subCategoryRepository;
-    }
-
+   
     @Override
     public Product createProduct(ProductDTO productDTO) {
         try {
@@ -93,6 +90,16 @@ public class ProductServiceImpl implements ProductService {
         Product updatedProduct = productRepository.save(existingProduct);
         log.info("Producto actualizado: {}", updatedProduct.getId());
         return updatedProduct;
+    }
+
+    @Override
+    public List<Product> getProductsByCollection(Long collectionId) {
+        try {
+            return productRepository.findByCollectionId(collectionId);
+        } catch (Exception e) {
+            log.error("Error al obtener productos por colección ID: {}", collectionId, e);
+            throw new RuntimeException("Error al obtener productos de la colección", e);
+        }
     }
 
     private void updateProductFields(Product product, ProductDTO dto) {
@@ -186,6 +193,10 @@ public class ProductServiceImpl implements ProductService {
         if (dto.getSubCategoryId() != null) {
             product.setSubCategory(subCategoryRepository.findById(dto.getSubCategoryId())
                     .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada")));
+        }
+        if (dto.getCollectionId() != null) {
+            product.setCollection(collectionRepository.findById(dto.getCollectionId())
+                    .orElseThrow(() -> new RuntimeException("Colección no encontrada")));
         }
         product.setSalesCount(0);
         return product;
