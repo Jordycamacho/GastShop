@@ -72,6 +72,10 @@ public class Product {
     private SubCategory subCategory;
 
     @ManyToOne
+    @JoinColumn(name = "collection_id")
+    private Collection collection;
+    
+    @ManyToOne
     @JoinColumn(name = "idCategory")
     private Category category;
 

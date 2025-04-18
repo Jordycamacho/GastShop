@@ -57,7 +57,7 @@ public class ImageServiceImpl implements ImageService {
                     savedImages.add(fileName);
                 } catch (IOException e) {
                     log.error("Error al guardar la imagen: {}", e.getMessage());
-                    // Continuar con las siguientes imágenes
+
                 }
             }
         }
@@ -84,7 +84,7 @@ public class ImageServiceImpl implements ImageService {
         try {
             Path filePath = Paths.get(uploadDir).resolve(fileName).normalize();
             File file = filePath.toFile();
-            
+
             Path uploadPath = Paths.get(uploadDir).normalize().toAbsolutePath();
             if (!filePath.toAbsolutePath().startsWith(uploadPath)) {
                 log.warn("Intento de eliminar archivo fuera del directorio permitido: {}", filePath);
@@ -132,18 +132,32 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void deleteImageNormal(String fileName) {
+        if (fileName == null || fileName.isEmpty() || fileName.equals(getDefaultImage())) {
+            return;
+        }
+
         try {
-            String filePath = uploadDir + fileName;
-            File file = new File(filePath);
-            if (file.exists() && !fileName.equals(getDefaultImage())) {
-                if (file.delete()) {
-                    log.info("Imagen eliminada: {}", fileName);
-                } else {
-                    log.warn("No se pudo eliminar la imagen: {}", fileName);
+            Path filePath = Paths.get(uploadDir).resolve(fileName).normalize();
+            Path uploadPath = Paths.get(uploadDir).normalize();
+
+            if (!filePath.startsWith(uploadPath)) {
+                log.warn("Intento de eliminar archivo fuera del directorio permitido: {}", filePath);
+                return;
+            }
+
+            File file = filePath.toFile();
+            if (file.exists()) {
+                if (!file.delete()) {
+                    log.warn("Primer intento fallido, liberando recursos...");
+                    System.gc();
+                    if (!file.delete()) {
+                        log.error("No se pudo eliminar la imagen: {}", filePath);
+                    }
                 }
+                log.info("Imagen eliminada: {}", filePath);
             }
         } catch (Exception e) {
-            log.error("Error al eliminar la imagen: {}", e.getMessage());
+            log.error("Error al eliminar la imagen {}: {}", fileName, e.getMessage());
         }
     }
 

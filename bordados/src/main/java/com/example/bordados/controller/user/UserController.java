@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.bordados.DTOs.CategorySubCategoryDTO;
+import com.example.bordados.DTOs.CollectionDTO;
 import com.example.bordados.DTOs.UserDTO;
 import com.example.bordados.model.Product;
 import com.example.bordados.service.CategoryService;
+import com.example.bordados.service.CollectionService;
 import com.example.bordados.service.IUserService;
 import com.example.bordados.service.ProductService;
 
@@ -43,6 +45,9 @@ public class UserController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CollectionService collectionService;
+
     @ModelAttribute("categoriesWithSub")
     public List<CategorySubCategoryDTO> getCategoriesWithSubCategories() {
         return categoryService.getAllCategoriesWithSubCategories();
@@ -53,10 +58,12 @@ public class UserController {
         List<Product> customizableProducts = productService.getCustomizableProducts();
         List<Product> bestsellrs = productService.getTopSellingProducts();
         List<Product> randomProducts = productService.getRandomProducts();
+        List<CollectionDTO> collections = collectionService.getAllCollections();
 
         model.addAttribute("customizableProducts", customizableProducts);
         model.addAttribute("bestsellers", bestsellrs);
         model.addAttribute("randomProducts", randomProducts);
+        model.addAttribute("collections", collections);
         
         return "user/index";
     }
