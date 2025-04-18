@@ -698,6 +698,148 @@ body {
     opacity: 1;
 }
 
+/*SECCION COLECCIONES */
+/* SECCIÓN COLECCIONES - ESTILOS ÚNICOS */
+.featured-collections {
+    padding: 50px 20px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+.featured-collections-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+.collections-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.collection-card {
+    text-decoration: none;
+    display: block;
+    height: 500px; /* Más alargado/vertical */
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.collection-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.collection-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.collection-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.collection-card:hover .collection-img {
+    transform: scale(1.05);
+}
+
+.collection-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.collection-card:hover .collection-overlay {
+    opacity: 1;
+}
+
+.collection-title {
+    font-size: 1.8rem;
+    margin: 0;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.collection-card:hover .collection-title {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .collections-container {
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 15px; 
+    }
+    
+    .featured-collections {
+        padding: 30px 15px;
+    }
+    
+    .featured-collections-title {
+        font-size: 1.8rem; 
+        margin-bottom: 25px;
+    }
+    
+    .collection-card {
+        height: 250px; 
+        min-height: 250px; 
+    }
+    
+    .collection-overlay {
+        padding: 20px 15px; 
+    }
+    
+    .collection-title {
+        font-size: 1.3rem; 
+        transform: none;
+        opacity: 1; 
+        background: rgba(0,0,0,0.7); 
+        padding: 8px;
+        border-radius: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .collection-card {
+        height: 220px; 
+        min-height: 220px;
+    }
+    
+    .collection-title {
+        font-size: 1.1rem; 
+        padding: 5px;
+    }
+    
+    .featured-collections-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .collection-card {
+        height: 280px;
+    }
+}
 
 /*BESTSELLERS*/
 .bestsellers {
