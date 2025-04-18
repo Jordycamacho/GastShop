@@ -48,6 +48,17 @@
                 </select>
             </div>
 
+            <div class="mb-3">
+                <label for="collectionId" class="form-label">Colección (opcional)</label>
+                <select id="collectionId" th:field="*{collectionId}" class="form-control">
+                    <option value="">Seleccione una colección</option>
+                    <option th:each="collection : ${collections}" 
+                            th:value="${collection.id}"
+                            th:text="${collection.nameCollection + ' (' + collection.categoryName + ')'}"
+                            th:selected="${collection.id == productDTO.collectionId}"></option>
+                </select>
+            </div>
+
             <!-- Cantidad -->
             <div class="mb-3">
                 <label for="quantity" class="form-label">Cantidad</label>

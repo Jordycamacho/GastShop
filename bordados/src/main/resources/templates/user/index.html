@@ -110,7 +110,7 @@
             <h2 class="featured-collections-title">COLECCIONES</h2>
             <div class="collections-container">
                 <a th:each="collection : ${collections}" 
-                   th:href="@{'/colecciones/' + ${collection.id}}" 
+                   th:href="@{'bordados/colecciones/' + ${collection.id}}" 
                    class="collection-card">
                     <div class="collection-image-wrapper">
                         <img th:src="@{'/images/' + ${collection.imageCollection}}" 
