@@ -105,6 +105,25 @@
                 </div>
             </div>
         </section>
+
+        <section class="featured-collections">
+            <h2 class="featured-collections-title">COLECCIONES</h2>
+            <div class="collections-container">
+                <a th:each="collection : ${collections}" 
+                   th:href="@{'/colecciones/' + ${collection.id}}" 
+                   class="collection-card">
+                    <div class="collection-image-wrapper">
+                        <img th:src="@{'/images/' + ${collection.imageCollection}}" 
+                             th:alt="${collection.nameCollection}"
+                             class="collection-img"
+                             onerror="this.src='/images/default.jpg'">
+                        <div class="collection-overlay">
+                            <h3 class="collection-title" th:text="${collection.nameCollection}"></h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
     </main>
     <footer class="footer" th:insert="~{user/templateUser.html::footer}"></footer>
     <div th:insert="~{user/templateUser.html::script}"></div>

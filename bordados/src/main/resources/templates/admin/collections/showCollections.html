@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/category/templateAdmin.html::header}"></head>
+<body>
+
+    <header th:replace="~{admin/category/templateAdmin.html::user_nav}"></header>
+    <nav th:replace="~{admin/category/templateAdmin.html::admin_nav}"></nav>
+    
+    <div class="container mt-4">
+        <h2 class="mb-3">Lista de Colecciones</h2>
+
+        <a class="btn btn-primary mb-3" th:href="@{/admin/colecciones/crear}">Crear Nueva Colección</a>
+
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Imagen</th>
+                    <th>Categoría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="collection : ${collections}">
+                    <td th:text="${collection.id}"></td>
+                    <td th:text="${collection.nameCollection}"></td>
+                    <td>
+                        <img th:if="${collection.imageCollection}" 
+                             th:src="@{'/images/' + ${collection.imageCollection}}" 
+                             alt="Imagen colección" style="max-width: 100px; max-height: 100px;">
+                    </td>
+                    <td th:text="${collection.categoryName}"></td>
+                    <td>
+                        <a th:href="@{/admin/colecciones/editar/{id}(id=${collection.id})}" class="btn btn-sm btn-warning">Editar</a>
+                        <a th:href="@{/admin/colecciones/eliminar/{id}(id=${collection.id})}" 
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('¿Seguro que deseas eliminar esta colección?')">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="~{admin/category/templateAdmin.html::script}"></div>
+</body>
+</html>

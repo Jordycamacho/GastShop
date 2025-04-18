@@ -132,8 +132,45 @@
             gap: 5px;
         }
 
-        /* En móvil, se apilan las columnas */
+                /* Estilos para el carrusel */
+                .swiper {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        
+        .swiper-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .swiper-button-next, .swiper-button-prev {
+            color: #000;
+            background: rgba(255, 255, 255, 0.7);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: #000;
+        }
+    
         @media (max-width: 768px) {
+            .swiper {
+                height: 300px;
+            }
             .order-summary {
                 flex-direction: column;
             }
@@ -152,9 +189,19 @@
     <main>
         <section class="product-display">
             <!-- Foto Principal del Producto -->
-            <div class="product-image">
-                <img th:src="@{'/images/' + ${product.image}}" alt="Producto" class="product-image">
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" th:each="image : ${product.images}">
+                        <img th:src="@{'/images/' + ${image}}" th:alt="${product.name}" 
+                             onerror="this.src='/images/default.jpg'">
+                    </div>
+                </div>
+                <!-- Paginación y navegación -->
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
+
             <div class="product-form">
                 <h1 th:text="${product.name}"></h1>
                 <p class="product-description" th:text="${product.description}"></p>
@@ -499,8 +546,63 @@
     </main>
     <footer class="footer" th:insert="~{user/templateUser.html::footer}"></footer>
 
+    
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        // 33333333
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuración del carrusel
+            const swiper = new Swiper('.swiper', {
+                // Configuración básica
+                loop: true,
+                autoplay: {
+                    delay: 3000, // Cambia cada 3 segundos
+                    disableOnInteraction: false,
+                },
+                
+                // Paginación
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                
+                // Navegación
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                
+                // Efecto de transición
+                effect: 'slide',
+                speed: 500,
+                
+                // Responsive
+                breakpoints: {
+                    320: {
+                        slidesPerView: 1,
+                        spaceBetween: 10
+                    },
+                    768: {
+                        slidesPerView: 1,
+                        spaceBetween: 20
+                    },
+                    1024: {
+                        slidesPerView: 1,
+                        spaceBetween: 30
+                    }
+                }
+            });
+            
+            // Pausar el carrusel al interactuar
+            swiper.el.addEventListener('mouseenter', () => {
+                swiper.autoplay.stop();
+            });
+            
+            swiper.el.addEventListener('mouseleave', () => {
+                swiper.autoplay.start();
+            });
+        });
+    </script>
+    <script>
         let stripe;
         let elements;
         let cardElement;

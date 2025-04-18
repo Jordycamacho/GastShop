@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/category/templateAdmin.html::header}">
+    <title th:text="${collection.id == null ? 'Crear Colección' : 'Editar Colección'}"></title>
+</head>
+
+<body>
+
+    <header th:replace="~{admin/category/templateAdmin.html::user_nav}"></header>
+    <nav th:replace="~{admin/category/templateAdmin.html::admin_nav}"></nav>
+
+    <div class="container mt-4">
+        <h1 th:text="${collection.id == null ? 'Crear Colección' : 'Editar Colección'}"></h1>
+
+        <form th:action="@{${collection.id == null ? '/admin/colecciones/crear' : '/admin/colecciones/editar/' + collection.id}}" 
+              method="post" th:object="${collection}" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="nameCollection" class="form-label">Nombre de la colección</label>
+                <input type="text" id="nameCollection" th:field="*{nameCollection}" class="form-control" required>
+                <div th:if="${#fields.hasErrors('nameCollection')}" th:errors="*{nameCollection}" class="text-danger"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="imageFile" class="form-label">Imagen de la colección</label>
+                <input type="file" id="imageFile" name="imageFile" class="form-control" 
+                       th:unless="${collection.imageCollection}">
+                <div th:if="${collection.imageCollection}">
+                    <img th:src="@{'/images/' + ${collection.imageCollection}}" 
+                         alt="Imagen actual" style="max-width: 200px; display: block; margin-bottom: 10px;">
+                    <input type="file" id="imageFile" name="imageFile" class="form-control">
+                    <a th:href="@{'/admin/colecciones/eliminar-imagen/' + ${collection.id}}" 
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('¿Eliminar esta imagen?')">Eliminar imagen</a>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="categoryId" class="form-label">Categoría</label>
+                <select id="categoryId" th:field="*{categoryId}" class="form-select" required>
+                    <option value="">Seleccione una categoría</option>
+                    <option th:each="cat : ${categories}" 
+                            th:value="${cat.idCategory}" 
+                            th:text="${cat.nameCategory}"
+                            th:selected="${cat.idCategory == collection.categoryId}">
+                    </option>
+                </select>
+                <div th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}" class="text-danger"></div>
+            </div>
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a th:href="@{/admin/colecciones}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <div th:replace="~{admin/category/templateAdmin.html::script}"></div>
+</body>
+</html>
