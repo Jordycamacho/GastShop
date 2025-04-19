@@ -9,17 +9,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.bordados.model.Notices;
 import com.example.bordados.model.Permission;
 import com.example.bordados.model.Role;
 import com.example.bordados.model.User;
 import com.example.bordados.model.UserType;
 import com.example.bordados.model.Enums.RoleEnum;
+import com.example.bordados.repository.NoticesRepository;
 import com.example.bordados.repository.PermissionRepository;
 import com.example.bordados.repository.RoleRepository;
 import com.example.bordados.repository.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 
 @Component
+@AllArgsConstructor
 @Transactional
 public class DataInitializer implements CommandLineRunner {
 
@@ -27,21 +32,26 @@ public class DataInitializer implements CommandLineRunner {
     private final PermissionRepository permissionRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NoticesRepository noticesRepository;
 
-    public DataInitializer(RoleRepository roleRepository, 
-                         PermissionRepository permissionRepository,
-                         UserRepository userRepository,
-                         PasswordEncoder passwordEncoder) {
-        this.roleRepository = roleRepository;
-        this.permissionRepository = permissionRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public void run(String... args) throws Exception {
         initializeRolesAndPermissions();
         createAdminUser();
+        initializeDefaultNotices();
+    }
+
+    private void initializeDefaultNotices() {
+        if (noticesRepository.count() == 0) {
+            Notices defaultNotices = Notices.builder()
+                .offers("¡Obtén un 10% de descuento en tu primer pedido!")
+                .bannerMain("Nueva colección primavera/verano 2025")
+                .bannerSecondary("¡Descuentos en conjuntos!")
+                .build();
+            
+            noticesRepository.save(defaultNotices);
+        }
     }
 
     private void initializeRolesAndPermissions() {
