@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/category/templateAdmin.html::header}">
+    <title>Gestión de Textos</title>
+</head>
+<body>
+    <header th:replace="~{admin/category/templateAdmin.html::user_nav}"></header>
+    <nav th:replace="~{admin/category/templateAdmin.html::admin_nav}"></nav>
+    
+    <div class="container mt-4">
+        <h2 class="mb-3">Gestión de Textos</h2>
+
+        <!-- Mensajes de éxito/error -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Formulario de creación/edición -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 th:text="${notices.id == null ? 'Crear Textos' : 'Editar Textos'}"></h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/notices}" th:object="${notices}" method="post">
+                    <div class="mb-3">
+                        <label for="offers" class="form-label">Texto de Ofertas</label>
+                        <input type="text" id="offers" th:field="*{offers}" class="form-control" required>
+                        <div th:if="${#fields.hasErrors('offers')}" th:errors="*{offers}" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bannerMain" class="form-label">Banner Principal</label>
+                        <input type="text" id="bannerMain" th:field="*{bannerMain}" class="form-control" required>
+                        <div th:if="${#fields.hasErrors('bannerMain')}" th:errors="*{bannerMain}" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bannerSecondary" class="form-label">Banner Secundario</label>
+                        <input type="text" id="bannerSecondary" th:field="*{bannerSecondary}" class="form-control" required>
+                        <div th:if="${#fields.hasErrors('bannerSecondary')}" th:errors="*{bannerSecondary}" class="text-danger"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <a th:href="@{/admin/notices}" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de textos existentes -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Textos Existentes</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Ofertas</th>
+                            <th>Banner Principal</th>
+                            <th>Banner Secundario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="notice : ${allNotices}">
+                            <td th:text="${notice.id}"></td>
+                            <td th:text="${notice.offers}"></td>
+                            <td th:text="${notice.bannerMain}"></td>
+                            <td th:text="${notice.bannerSecondary}"></td>
+                            <td>
+                                <a th:href="@{'/admin/notices/delete/' + ${notice.id}}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('¿Seguro que deseas eliminar estos textos?')">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{admin/category/templateAdmin.html::script}"></div>
+</body>
+</html>
