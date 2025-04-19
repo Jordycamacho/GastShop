@@ -29,7 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/bordados","/bordados/producto/**","/bordados/afiliacion","/bordados/guia","/bordados/orden/tracking"
                         ,"/bordados/contacto").permitAll()
                         .requestMatchers("/bordados/login","/bordados/registro","/bordados/categoria/**","/bordados/login-success","/bordados/registro",
-                        "/bordados/politicaprivacidad", "/bordados/politicaenviosrembolsos","/bordados/terminosservicio").permitAll()
+                        "/bordados/politicaprivacidad", "/bordados/politicaenviosrembolsos","/bordados/terminosservicio", "/bordados/colecciones/**").permitAll()
                         .requestMatchers("/bordados/carrito/**", "/bordados/wishlist/**","/bordados/orden/validardescuento",
                         "/bordados/orden/validardescuento-custom","/bordados/orden/createpaymentintent","/bordados/producto/personalizar/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/admin/**","/swagger-ui/**").hasRole("ADMIN")
