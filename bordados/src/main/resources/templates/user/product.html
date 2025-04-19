@@ -122,11 +122,114 @@
             .product-form {
                 padding: 20px;
             }
+
             .swiper-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+
+        /* Estilos para el modal de guía de tallas */
+        .size-guide-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: modalopen 0.4s;
+        }
+
+        @keyframes modalopen {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-carousel {
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modal-carousel .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f9f9f9;
+        }
+
+        .modal-carousel img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .size-guide-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .size-guide-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+
+            .modal-carousel {
+                height: 300px;
+            }
         }
     </style>
 
@@ -189,7 +292,13 @@
 
                     <!-- Elige tu talla -->
                     <div class="form-group">
-                        <label>Elige tu talla*</label>
+                        <div class="size-guide-header">
+                            <label>Elige tu talla*</label>
+                            <button type="button" class="size-guide-btn" onclick="openSizeGuide()">
+                                Guía de tallas <i class="fas fa-ruler"></i>
+                            </button>
+                        </div>
+
                         <div class="size-options">
                             <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
                                 onclick="selectSize(event)">
@@ -219,156 +328,85 @@
         </section>
 
         <!-- Guía de Tallas -->
-        <section class="size-guide">
-            <h2>Guía de Tallas</h2>
-            <div class="tables-container">
-                <!-- Tabla para Camisas -->
-                <div class="size-table">
-                    <h3>Camisas</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Talla</th>
-                                <th>Ancho (cm)</th>
-                                <th>Largo (cm)</th>
-                                <th>Manga (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S</td>
-                                <td>57</td>
-                                <td>58</td>
-                                <td>68</td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td>59</td>
-                                <td>60</td>
-                                <td>70</td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td>61</td>
-                                <td>62</td>
-                                <td>72</td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td>63</td>
-                                <td>64</td>
-                                <td>74</td>
-                            </tr>
-                            <tr>
-                                <td>2XL</td>
-                                <td>65</td>
-                                <td>66</td>
-                                <td>77</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Tabla para Sudaderas con capucha -->
-                <div class="size-table">
-                    <h3>Sudaderas con Capucha</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Talla</th>
-                                <th>Ancho (cm)</th>
-                                <th>Largo (cm)</th>
-                                <th>Manga (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S</td>
-                                <td>69</td>
-                                <td>62</td>
-                                <td>73</td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td>71</td>
-                                <td>64</td>
-                                <td>75</td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td>73</td>
-                                <td>66</td>
-                                <td>77</td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td>75</td>
-                                <td>68</td>
-                                <td>79</td>
-                            </tr>
-                            <tr>
-                                <td>2XL</td>
-                                <td>77</td>
-                                <td>70</td>
-                                <td>81</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Tabla para Sudaderas -->
-                <div class="size-table">
-                    <h3>Sudaderas</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Talla</th>
-                                <th>Ancho (cm)</th>
-                                <th>Largo (cm)</th>
-                                <th>Manga (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S</td>
-                                <td>69</td>
-                                <td>62</td>
-                                <td>73</td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td>71</td>
-                                <td>64</td>
-                                <td>75</td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td>73</td>
-                                <td>66</td>
-                                <td>77</td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td>75</td>
-                                <td>68</td>
-                                <td>79</td>
-                            </tr>
-                            <tr>
-                                <td>2XL</td>
-                                <td>77</td>
-                                <td>70</td>
-                                <td>81</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div id="sizeGuideModal" class="size-guide-modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeSizeGuide()">&times;</span>
+                <div class="modal-carousel swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img th:src="@{/images/camisas.jpg}" alt="Guía de tallas camisas">
+                        </div>
+                        <div class="swiper-slide">
+                            <img th:src="@{/images/capucha.jpg}" alt="Guía de tallas capucha">
+                        </div>
+                        <div class="swiper-slide">
+                            <img th:src="@{/images/oversizecapucha.jpg}" alt="Guía de tallas oversize">
+                        </div>
+                        <div class="swiper-slide">
+                            <img th:src="@{/images/sincapucha.jpg}" alt="Guía de tallas sin capucha">
+                        </div>
+                    </div>
+                    <!-- Controles del carrusel -->
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer class="footer" th:insert="~{user/templateUser.html::footer}"></footer>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Modal de guía de tallas
+        let sizeGuideSwiper;
+
+        function openSizeGuide() {
+            const modal = document.getElementById('sizeGuideModal');
+            modal.style.display = 'block';
+
+            // Inicializar swiper solo una vez
+            if (!sizeGuideSwiper) {
+                sizeGuideSwiper = new Swiper('.modal-carousel', {
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                });
+            }
+        }
+
+        function closeSizeGuide() {
+            document.getElementById('sizeGuideModal').style.display = 'none';
+        }
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.onclick = function (event) {
+            const modal = document.getElementById('sizeGuideModal');
+            if (event.target == modal) {
+                closeSizeGuide();
+            }
+        }
+
+        function selectSize(event) {
+            // Remover clase activa de todos los botones
+            document.querySelectorAll('.size-option').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Añadir clase activa al botón seleccionado
+            event.target.classList.add('active');
+
+            // Establecer el valor seleccionado
+            document.getElementById('selectedSize').value = event.target.getAttribute('data-size');
+        }
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Inicialización del carrusel
