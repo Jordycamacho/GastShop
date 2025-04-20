@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -16,14 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.bordados.DTOs.CategorySubCategoryDTO;
 import com.example.bordados.DTOs.CollectionDTO;
+import com.example.bordados.DTOs.NoticesDTO;
 import com.example.bordados.DTOs.UserDTO;
 import com.example.bordados.model.Product;
 import com.example.bordados.service.CategoryService;
 import com.example.bordados.service.CollectionService;
 import com.example.bordados.service.IUserService;
+import com.example.bordados.service.NoticesService;
 import com.example.bordados.service.ProductService;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,27 +33,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/bordados")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private IUserService userService;
-
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private CollectionService collectionService;
+    private final IUserService userService;
+    private final CategoryService categoryService;
+    private final ProductService productService;
+    private final CollectionService collectionService;
+    private final NoticesService noticesService;
 
     @ModelAttribute("categoriesWithSub")
     public List<CategorySubCategoryDTO> getCategoriesWithSubCategories() {
         return categoryService.getAllCategoriesWithSubCategories();
     }
+
+    @ModelAttribute("currentNotices")
+    public NoticesDTO getCurrentNotices() {
+        return noticesService.getCurrentNotices();
+    }
+
     
     @GetMapping("")
     public String getProducts(Model model) {

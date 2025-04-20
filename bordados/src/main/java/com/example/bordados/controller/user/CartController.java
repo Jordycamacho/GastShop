@@ -3,7 +3,6 @@ package com.example.bordados.controller.user;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,31 +13,38 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.bordados.DTOs.CartDTO;
 import com.example.bordados.DTOs.CategorySubCategoryDTO;
+import com.example.bordados.DTOs.NoticesDTO;
 import com.example.bordados.model.User;
 import com.example.bordados.model.Enums.Color;
 import com.example.bordados.model.Enums.Size;
 import com.example.bordados.service.CartService;
 import com.example.bordados.service.CategoryService;
 import com.example.bordados.service.IUserService;
+import com.example.bordados.service.NoticesService;
+
+import lombok.AllArgsConstructor;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/bordados/carrito")
 public class CartController {
 
-    @Autowired
-    private CartService cartService;
-
-    @Autowired
-    private IUserService userService;
-
-    @Autowired
-    private CategoryService categoryService;
+    private final CartService cartService;
+    private final IUserService userService;
+    private final CategoryService categoryService;
+    private final NoticesService noticesService;
 
     @ModelAttribute("categoriesWithSub")
     public List<CategorySubCategoryDTO> getCategoriesWithSubCategories() {
         return categoryService.getAllCategoriesWithSubCategories();
+    }
+
+    @ModelAttribute("currentNotices")
+    public NoticesDTO getCurrentNotices() {
+        return noticesService.getCurrentNotices();
     }
     
     @GetMapping("")

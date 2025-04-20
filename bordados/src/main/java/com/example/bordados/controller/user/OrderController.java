@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.bordados.DTOs.CartDTO;
+import com.example.bordados.DTOs.CategorySubCategoryDTO;
 import com.example.bordados.DTOs.CustomizedOrderDetailDto;
+import com.example.bordados.DTOs.NoticesDTO;
 import com.example.bordados.model.CustomizedOrderDetail;
 import com.example.bordados.model.Discount;
 import com.example.bordados.model.Order;
@@ -43,8 +45,10 @@ import com.example.bordados.repository.OrderDetailRepository;
 import com.example.bordados.repository.OrderRepository;
 import com.example.bordados.repository.UserRepository;
 import com.example.bordados.service.CartService;
+import com.example.bordados.service.CategoryService;
 import com.example.bordados.service.EmailService;
 import com.example.bordados.service.IUserService;
+import com.example.bordados.service.NoticesService;
 import com.example.bordados.service.ProductService;
 import com.example.bordados.service.ServiceImpl.OrderServiceImpl;
 import com.example.bordados.service.ServiceImpl.PricingServiceImpl;
@@ -74,15 +78,20 @@ public class OrderController {
     private final DiscountRepository discountRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final CategoryService categoryService;
+    private final NoticesService noticesService;
 
     public OrderController(CartService cartService, IUserService userService, OrderServiceImpl orderService,
             ProductService productService, StripeService stripeService, PricingServiceImpl pricingService,
             OrderRepository orderRepository, OrderCustomRepository orderCustomRepository,
             EmailService emailService,
             OrderDetailRepository orderDetailRepository, DiscountRepository discountRepository,
-            CustomizedOrderDetailRepository customizedOrderDetailRepository, UserRepository userRepository) {
+            CustomizedOrderDetailRepository customizedOrderDetailRepository, UserRepository userRepository
+            , CategoryService categoryService, NoticesService noticesService) {
         this.productService = productService;
+        this.categoryService = categoryService;
         this.userRepository = userRepository;
+        this.noticesService = noticesService;
         this.emailService = emailService;
         this.discountRepository = discountRepository;
         this.customizedOrderDetailRepository = customizedOrderDetailRepository;
@@ -94,6 +103,16 @@ public class OrderController {
         this.cartService = cartService;
         this.userService = userService;
         this.orderService = orderService;
+    }
+
+    @ModelAttribute("categoriesWithSub")
+    public List<CategorySubCategoryDTO> getCategoriesWithSubCategories() {
+        return categoryService.getAllCategoriesWithSubCategories();
+    }
+
+    @ModelAttribute("currentNotices")
+    public NoticesDTO getCurrentNotices() {
+        return noticesService.getCurrentNotices();
     }
 
     @GetMapping("")
