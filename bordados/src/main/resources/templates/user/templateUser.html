@@ -9,7 +9,7 @@
 
 <header th:fragment="nav_user_home">
     <div class="top-bar">
-        <p>¡Obtén un 10% de descuento en tu primer pedido!</p>
+        <p th:text="${currentNotices.offers}"></p>
     </div>
     <nav class="navbar">
 
@@ -145,8 +145,8 @@
                     Tu navegador no soporta videos HTML5.
                 </video>
                 <button class="button_home" data-text="Awesome">
-                    <span class="actual-text">&nbsp;EXPLORA_NUESTRO_CONTENIDO&nbsp;</span>
-                    <span aria-hidden="true" class="hover-text">&nbsp;EXPLORA_NUESTRO_CONTENIDO&nbsp;</span>
+                    <span class="actual-text" th:text="${currentNotices.bannerMain}">&nbsp;&nbsp;</span>
+                    <span aria-hidden="true" class="hover-text" th:text="${currentNotices.bannerMain}">&nbsp;&nbsp;</span>
                 </button>
             </div>
         </a>
@@ -156,7 +156,7 @@
 
 <header th:fragment="nav_user">
     <div class="top-bar">
-        <p>¡Obtén un 10% de descuento en tu primer pedido!</p>
+        <p th:text="${currentNotices.offers}"></p>
     </div>
     <nav class="navbar">
 
@@ -293,8 +293,8 @@
             </video>
             <div class="customize-content">
                 <button class="button_home" data-text="Awesome">
-                    <span class="actual-text">&nbsp;EXPLORA_NUESTRO_CONTENIDO&nbsp;</span>
-                    <span aria-hidden="true" class="hover-text">&nbsp;EXPLORA_NUESTRO_CONTENIDO&nbsp;</span>
+                    <span class="actual-text" th:text="${currentNotices.bannerSecondary}" >&nbsp;&nbsp;</span>
+                    <span aria-hidden="true" class="hover-text" th:text="${currentNotices.bannerSecondary}">&nbsp;&nbsp;</span>
                 </button>
             </div>
         </div>
