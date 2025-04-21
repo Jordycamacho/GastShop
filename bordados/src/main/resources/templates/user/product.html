@@ -240,7 +240,8 @@
 
     <main>
         <section class="product-display">
-            <!-- Galería de imágenes -->
+            <h1 th:text="${product.name}"></h1>
+            <br>
             <div class="swiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide" th:each="image : ${product.images}">
@@ -255,7 +256,6 @@
             </div>
 
             <div class="product-form">
-                <h1 th:text="${product.name}"></h1>
                 <p class="product-description" th:text="${product.description}"></p>
                 <p class="product-price" th:text="${product.price} + '0 $'"></p>
 

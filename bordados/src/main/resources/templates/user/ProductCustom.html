@@ -8,7 +8,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         .preview-button {
             display: inline-block;
@@ -250,8 +251,8 @@
         }
 
 
-                /* Estilos para el modal de guía de tallas */
-                .size-guide-modal {
+        /* Estilos para el modal de guía de tallas */
+        .size-guide-modal {
             display: none;
             position: fixed;
             z-index: 1000;
@@ -356,7 +357,7 @@
     <header th:insert="~{user/templateUser.html::nav_user}"></header>
     <main>
         <section class="product-display">
-            <!-- Foto Principal del Producto -->
+            <h1 th:text="${product.name}"></h1>
             <div class="swiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide" th:each="image : ${product.images}">
@@ -371,7 +372,7 @@
             </div>
 
             <div class="product-form">
-                <h1 th:text="${product.name}"></h1>
+
                 <p class="product-description" th:text="${product.description}"></p>
                 <p class="product-price" th:text="${product.price} + '0 $'"></p>
 
@@ -668,7 +669,7 @@
     </script>
     <script>
         // Inicializar Swiper para el carrusel principal
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const productSwiper = new Swiper('.swiper', {
                 // Opciones de configuración
                 loop: true,
