@@ -866,12 +866,20 @@ body {
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform var(--transition-speed);
+    display: flex;
+    flex-direction: column;
 }
 
 .product-card:hover {
     transform: translateY(-5px);
 }
-
+.product-link {
+    display: block;
+    flex-grow: 1;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px;
+}
 /*========================================================================================================*/
 .favorite-btn {
     position: absolute;
@@ -883,6 +891,7 @@ body {
     cursor: pointer;
     color: var(--secondary-color);
     transition: color var(--transition-speed), transform var(--transition-speed);
+    z-index: 2;
 }
 
 .favorite-btn:hover {
@@ -915,6 +924,10 @@ body {
     text-decoration: line-through;
     color: var(--secondary-color);
     margin-left: 5px;
+}
+
+.c-button {
+    margin-top: auto;
 }
 
 .view-product-btn {
