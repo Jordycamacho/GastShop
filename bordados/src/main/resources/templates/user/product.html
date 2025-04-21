@@ -206,13 +206,12 @@
         .size-guide-btn {
             background: none;
             border: none;
-            color: var(--accent-color);
+            color: var(--terciary-color);
             font-size: 14px;
             cursor: pointer;
             display: flex;
-            align-items: center;
+            align-items: left;
             gap: 5px;
-            padding: 5px 10px;
             border-radius: 4px;
             transition: all 0.3s ease;
         }
@@ -242,19 +241,17 @@
     <main>
         <section class="product-display">
             <!-- Galería de imágenes -->
-            <div class="product-gallery">
-                <div class="swiper">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide" th:each="image : ${product.images}">
-                            <img th:src="@{'/images/' + ${image}}" th:alt="${product.name}"
-                                onerror="this.src='/images/default.jpg'">
-                        </div>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" th:each="image : ${product.images}">
+                        <img th:src="@{'/images/' + ${image}}" th:alt="${product.name}"
+                            onerror="this.src='/images/default.jpg'">
                     </div>
-                    <!-- Controles -->
-                    <div class="swiper-pagination"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
                 </div>
+                <!-- Controles -->
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
 
             <div class="product-form">
