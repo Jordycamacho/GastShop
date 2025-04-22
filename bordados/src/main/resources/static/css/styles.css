@@ -1167,9 +1167,10 @@ body {
 .product-display {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     gap: 20px;
     padding: 20px;
-    max-width: 1200px;
+    max-width: 60%;
     margin: 30px auto;
     background: white;
     border-radius: 15px;
@@ -1203,7 +1204,7 @@ body {
 }
 
 
-.product-display h1 {
+.fuck_title {
     font-size: 1.8rem;
     text-align: center;
     margin-bottom: 15px;
@@ -1214,7 +1215,7 @@ body {
 }
 
 .product-price {
-    font-size: 1.5rem;
+    font-size: var(--font-size-medium);
     color: var(--accent-color);
     margin: 15px 0;
     font-weight: 700;
@@ -2283,6 +2284,7 @@ body {
     /*Product ===============>  vista producto */
     .product-display {
         flex-direction: column;
+        max-width: 1200px;
         gap: 15px;
         padding: 15px;
         margin: 20px auto;

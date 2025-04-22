@@ -357,7 +357,7 @@
     <header th:insert="~{user/templateUser.html::nav_user}"></header>
     <main>
         <section class="product-display">
-            <h1 th:text="${product.name}"></h1>
+            <h1 th:text="${product.name}" class="fuck_title"></h1>
             <div class="swiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide" th:each="image : ${product.images}">

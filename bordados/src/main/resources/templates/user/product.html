@@ -19,12 +19,6 @@
             text-align: center;
         }
 
-        .product-gallery {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
-        }
-
         .swiper {
             width: 100%;
             height: 500px;
@@ -240,7 +234,7 @@
 
     <main>
         <section class="product-display">
-            <h1 th:text="${product.name}"></h1>
+            <h1 th:text="${product.name}" class="fuck_title"></h1>
             <br>
             <div class="swiper">
                 <div class="swiper-wrapper">
@@ -280,8 +274,11 @@
                     <div class="form-group">
                         <label>Elige el color de tu prenda*</label>
                         <div class="color-options">
-                            <button th:each="color : ${product.colors}" th:data-color="${color}" class="color-option"
-                                th:style="'background-color: ' + ${color.name()} + ';'" onclick="selectColor(event)">
+                            <button th:each="color : ${product.colors}" 
+                                    th:data-color="${color}" 
+                                    class="color-option"
+                                    th:style="'background-color: ' + ${color.getColorCode()} + ';'" 
+                                    onclick="selectColor(event)">
                             </button>
                         </div>
                         <input type="hidden" name="color" id="selectedColor">
