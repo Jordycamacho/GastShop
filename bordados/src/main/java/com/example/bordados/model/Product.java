@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.example.bordados.model.Enums.Color;
+import com.example.bordados.model.Enums.FitType;
 import com.example.bordados.model.Enums.Size;
 
 import jakarta.persistence.CollectionTable;
@@ -74,6 +75,10 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "collection_id")
     private Collection collection;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "fit_type")
+    private FitType fitType = FitType.STANDARD;
     
     @ManyToOne
     @JoinColumn(name = "idCategory")

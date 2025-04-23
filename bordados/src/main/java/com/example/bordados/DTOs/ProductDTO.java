@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bordados.model.Enums.Color;
+import com.example.bordados.model.Enums.FitType;
 import com.example.bordados.model.Enums.Size;
 
 import jakarta.validation.constraints.NotBlank;
@@ -47,6 +48,10 @@ public class ProductDTO {
     
     @NotNull
     private Long categoryId;
+
+    @Builder.Default
+    @NotNull
+    private FitType fitType = FitType.STANDARD;
     
     private Long subCategoryId;
 
