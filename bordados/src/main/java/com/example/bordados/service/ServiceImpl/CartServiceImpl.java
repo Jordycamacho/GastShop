@@ -11,6 +11,7 @@ import com.example.bordados.model.Cart;
 import com.example.bordados.model.Product;
 import com.example.bordados.model.User;
 import com.example.bordados.model.Enums.Color;
+import com.example.bordados.model.Enums.FitType;
 import com.example.bordados.model.Enums.Size;
 import com.example.bordados.repository.CartRepository;
 import com.example.bordados.service.CartService;
@@ -40,6 +41,7 @@ public class CartServiceImpl implements CartService {
                     .size(cart.getSize())
                     .color(cart.getColor())
                     .price(product.getPrice())
+                    .fitType(cart.getFitType())
                     .image(!product.getImages().isEmpty() 
                           ? product.getImages().get(0) 
                           : "default.jpg")
@@ -49,7 +51,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addProductToCart(Long userId, Long productId, int quantity, Size size, Color color) {
+    public void addProductToCart(Long userId, Long productId, int quantity, Size size, Color color, FitType fitType) {
         User user = userService.getUserById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Product product = productService.getProductById(productId);
 
@@ -63,6 +65,7 @@ public class CartServiceImpl implements CartService {
         cart.setQuantity(quantity);
         cart.setSize(size);
         cart.setColor(color);
+        cart.setFitType(fitType);
 
         cartRepository.save(cart);
     }

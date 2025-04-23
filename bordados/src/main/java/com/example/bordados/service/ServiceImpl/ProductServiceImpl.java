@@ -186,6 +186,7 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(dto.getQuantity());
         product.setPrice(dto.getPrice());
         product.setDiscount(dto.getDiscount());
+        product.setFitType(dto.getFitType());
         product.setSizes(dto.getSizes() != null ? new HashSet<>(dto.getSizes()) : new HashSet<>());
         product.setColors(dto.getColors() != null ? new HashSet<>(dto.getColors()) : new HashSet<>());
         product.setCategory(categoryRepository.findById(dto.getCategoryId())
@@ -223,6 +224,7 @@ public class ProductServiceImpl implements ProductService {
                 .discount(product.getDiscount())
                 .sizes(new HashSet<>(product.getSizes()))
                 .colors(new HashSet<>(product.getColors()))
+                .fitType(product.getFitType())
                 .categoryId(product.getCategory().getIdCategory())
                 .subCategoryId(product.getSubCategory() != null ? product.getSubCategory().getIdSubcategory() : null)
                 .existingImages(product.getImages())

@@ -4,12 +4,13 @@ import java.util.List;
 
 import com.example.bordados.DTOs.CartDTO;
 import com.example.bordados.model.Enums.Color;
+import com.example.bordados.model.Enums.FitType;
 import com.example.bordados.model.Enums.Size;
 
 public interface CartService {
     List<CartDTO> getCartByUserId(Long userId);
 
-    void addProductToCart(Long userId, Long productId, int quantity, Size size, Color color);
+    void addProductToCart(Long userId, Long productId, int quantity, Size size, Color color, FitType fitType);
 
     void removeFromCart(Long cartId);
 }

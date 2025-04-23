@@ -1,6 +1,7 @@
 package com.example.bordados.DTOs;
 
 import com.example.bordados.model.Enums.Color;
+import com.example.bordados.model.Enums.FitType;
 import com.example.bordados.model.Enums.Size;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class CartDTO {
     private Size size;
     private Color color;
     private double price;
+    private FitType fitType;
     private String image; 
 }
 

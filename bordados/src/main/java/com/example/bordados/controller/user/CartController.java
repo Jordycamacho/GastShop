@@ -16,6 +16,7 @@ import com.example.bordados.DTOs.CategorySubCategoryDTO;
 import com.example.bordados.DTOs.NoticesDTO;
 import com.example.bordados.model.User;
 import com.example.bordados.model.Enums.Color;
+import com.example.bordados.model.Enums.FitType;
 import com.example.bordados.model.Enums.Size;
 import com.example.bordados.service.CartService;
 import com.example.bordados.service.CategoryService;
@@ -60,15 +61,16 @@ public class CartController {
     public String addToCart(@RequestParam Long productId,
             @RequestParam int quantity,
             @RequestParam String size,
-            @RequestParam String color) {
+            @RequestParam String color,
+            @RequestParam FitType fitType) {
 
-        User user = userService.getCurrentUser(); // Obtiene el usuario autenticado
+        User user = userService.getCurrentUser(); 
 
         try {
             Size selectedSize = Size.valueOf(size);
             Color selectedColor = Color.valueOf(color);
 
-            cartService.addProductToCart(user.getId(), productId, quantity, selectedSize, selectedColor);
+            cartService.addProductToCart(user.getId(), productId, quantity, selectedSize, selectedColor, fitType);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Talla o color inválido" + e);
         }
