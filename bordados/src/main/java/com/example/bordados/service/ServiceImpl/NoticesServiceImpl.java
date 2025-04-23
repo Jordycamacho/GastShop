@@ -82,6 +82,7 @@ public class NoticesServiceImpl implements NoticesService {
         return dto;
     }
 
+    @SuppressWarnings("unused")
     private Notices convertToEntity(NoticesDTO noticesDTO) {
         Notices notices = new Notices();
         notices.setOffers(noticesDTO.getOffers());
