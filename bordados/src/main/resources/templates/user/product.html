@@ -260,11 +260,12 @@
 
                     <!-- Cantidad -->
                     <div class="form-group">
-                        <label>Cantidad</label>
+                        <label>Cantidad (Mínimo: <span th:text="${product.minQuantity}"></span>)</label>
                         <div class="quantity-selector">
                             <button type="button" class="quantity-btn" onclick="updateQuantity(-1)">-</button>
-                            <input type="number" name="quantity" id="quantity" th:max="${product.quantity}" value="1"
-                                min="1" class="quantity-input" required>
+                            <input type="number" name="quantity" id="quantity" th:max="${product.quantity}"
+                                th:min="${product.minQuantity}" th:value="${product.minQuantity}"
+                                class="quantity-input" required>
                             <button type="button" class="quantity-btn" onclick="updateQuantity(1)">+</button>
                         </div>
                     </div>
