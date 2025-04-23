@@ -184,6 +184,7 @@ public class ProductServiceImpl implements ProductService {
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setQuantity(dto.getQuantity());
+        product.setMinQuantity(dto.getMinQuantity() != null ? dto.getMinQuantity() : 1);
         product.setPrice(dto.getPrice());
         product.setDiscount(dto.getDiscount());
         product.setFitType(dto.getFitType());
@@ -220,6 +221,7 @@ public class ProductServiceImpl implements ProductService {
                 .name(product.getName())
                 .description(product.getDescription())
                 .quantity(product.getQuantity())
+                .minQuantity(product.getMinQuantity())
                 .price(product.getPrice())
                 .discount(product.getDiscount())
                 .sizes(new HashSet<>(product.getSizes()))

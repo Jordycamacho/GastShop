@@ -53,6 +53,10 @@ public class ProductDTO {
     @NotNull
     private FitType fitType = FitType.STANDARD;
     
+    @Builder.Default
+    @NotNull
+    private Integer minQuantity = 1;
+    
     private Long subCategoryId;
 
     private Long  collectionId;

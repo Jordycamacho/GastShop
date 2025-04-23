@@ -50,6 +50,9 @@ public class Product {
     @NotNull(message = "La cantidad es obligatoria")
     private int quantity;
 
+    @Column(name = "min_quantity", nullable = false, columnDefinition = "int default 1")
+    private int minQuantity = 1;
+    
     @NotNull(message = "El precio es obligatorio")
     private double price;
 
