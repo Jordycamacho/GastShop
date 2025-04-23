@@ -3,6 +3,7 @@ package com.example.bordados.DTOs;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bordados.model.Product;
+import com.example.bordados.model.Enums.FitType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class CustomizedOrderDetailDto {
     private Integer quantity;
     private String size;
     private String color;
+    private FitType fitType;
     private String embroideryType; // Tamaño del primer bordado
     private String firstEmbroideryPlacement;
     private MultipartFile firstEmbroideryFile;

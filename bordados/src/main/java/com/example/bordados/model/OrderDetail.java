@@ -1,6 +1,7 @@
 package com.example.bordados.model;
 
 import com.example.bordados.model.Enums.Color;
+import com.example.bordados.model.Enums.FitType;
 import com.example.bordados.model.Enums.Size;
 
 import jakarta.persistence.Column;
@@ -43,6 +44,10 @@ public class OrderDetail {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Color color;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FitType fitType; 
 }
 
 

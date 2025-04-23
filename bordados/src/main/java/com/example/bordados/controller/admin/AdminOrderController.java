@@ -2,7 +2,6 @@ package com.example.bordados.controller.admin;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +21,15 @@ import com.example.bordados.repository.OrderRepository;
 import com.example.bordados.service.CategoryService;
 import com.example.bordados.service.EmailService;
 
+import lombok.AllArgsConstructor;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/admin/ordenes")
 public class AdminOrderController {
 
@@ -36,18 +38,9 @@ public class AdminOrderController {
     private final OrderDetailRepository orderDetailRepository;
     private final CustomizedOrderDetailRepository customizedOrderDetailRepository;
     private final EmailService emailService;
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
-    public AdminOrderController(OrderRepository orderRepository, OrderCustomRepository orderCustomRepository,
-            OrderDetailRepository orderDetailRepository, EmailService emailService,
-            CustomizedOrderDetailRepository customizedOrderDetailRepository) {
-        this.orderRepository = orderRepository;
-        this.customizedOrderDetailRepository = customizedOrderDetailRepository;
-        this.orderDetailRepository = orderDetailRepository;
-        this.orderCustomRepository = orderCustomRepository;
-        this.emailService = emailService;
-    }
+
 
     @ModelAttribute("categoriesWithSub")
     public List<CategorySubCategoryDTO> getCategoriesWithSubCategories() {

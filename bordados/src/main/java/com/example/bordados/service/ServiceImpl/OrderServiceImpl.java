@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.bordados.DTOs.CustomizedOrderDetailDto;
@@ -53,19 +52,24 @@ public class OrderServiceImpl {
     private final DiscountRepository discountRepository;
 
     public Order createOrder(Long userId, String paymentIntentId, String discountCode) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario con ID " + userId + " no encontrado"));
+        User user = userService.getCurrentUser();
         List<Cart> cartItems = cartRepository.findByUser(user);
 
         if (cartItems.isEmpty()) {
             throw new IllegalArgumentException("El carrito está vacío");
         }
+
+        List<Product> updatedProducts = new ArrayList<>();
         for (Cart cartItem : cartItems) {
             Product product = cartItem.getProduct();
             if (product.getQuantity() < cartItem.getQuantity()) {
                 throw new IllegalStateException("Stock insuficiente para: " + product.getName());
             }
+
+            int requestedQuantity = cartItem.getQuantity();
+            product.setQuantity(product.getQuantity() - requestedQuantity);
+            product.setSalesCount(product.getSalesCount() + requestedQuantity);
+            updatedProducts.add(product);
         }
 
         long totalInCents = calculateTotal(cartItems, discountCode, user);
@@ -88,18 +92,7 @@ public class OrderServiceImpl {
         }
 
         createOrderDetails(savedOrder, cartItems);
-
-        // Actualizar el inventario
-        List<Product> updatedProducts = new ArrayList<>();
-        for (Cart cartItem : cartItems) {
-            Product product = cartItem.getProduct();
-            int requestedQuantity = cartItem.getQuantity();
-            product.setQuantity(product.getQuantity() - requestedQuantity);
-            updatedProducts.add(product);
-        }
         productRepository.saveAll(updatedProducts);
-
-        // Vaciar el carrito
         cartRepository.deleteAllInBatch(cartItems);
 
         return savedOrder;
@@ -114,23 +107,24 @@ public class OrderServiceImpl {
             Optional<User> referrerOpt = userRepository.findUserByAffiliateCode(discountCode);
             if (referrerOpt.isPresent()) {
                 User referrer = referrerOpt.get();
-                
+
                 if (user.getReferrer() != null) {
                     throw new IllegalArgumentException("Ya tienes un referido");
                 }
-                
+
                 if (orderRepository.countByUser(user) > 0) {
                     throw new IllegalArgumentException("Código válido solo para primera compra");
                 }
 
                 total = total.multiply(BigDecimal.valueOf(0.9));
-                
+
                 user.setReferrer(referrer);
                 userRepository.save(user);
-                
+
                 generarCodigoAfiliacion(referrer);
-            }else {
-                Discount discount = discountRepository.findByCode(discountCode).orElseThrow(() -> new IllegalArgumentException("Código inválido"));
+            } else {
+                Discount discount = discountRepository.findByCode(discountCode)
+                        .orElseThrow(() -> new IllegalArgumentException("Código inválido"));
                 validarDescuento(discount);
 
                 BigDecimal porcentaje = BigDecimal.valueOf(discount.getDiscountPercentage() / 100);
@@ -171,10 +165,11 @@ public class OrderServiceImpl {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setUser(order.getUser());
             orderDetail.setOrder(order);
-            orderDetail.setProduct(cart.getProduct()); // Usamos el producto directamente
+            orderDetail.setProduct(cart.getProduct());
             orderDetail.setQuantity(cart.getQuantity());
             orderDetail.setSize(cart.getSize());
             orderDetail.setColor(cart.getColor());
+            orderDetail.setFitType(cart.getFitType());
 
             orderDetailRepository.save(orderDetail);
         }
@@ -217,6 +212,7 @@ public class OrderServiceImpl {
         detail.setQuantity(dto.getQuantity());
         detail.setSize(dto.getSize());
         detail.setColor(dto.getColor());
+        detail.setFitType(dto.getFitType());
         detail.setEmbroideryType(dto.getEmbroideryType());
         detail.setFirstEmbroideryPlacement(dto.getFirstEmbroideryPlacement());
         detail.setFirstEmbroideryFile(imageService.saveImageNormal(dto.getFirstEmbroideryFile()));

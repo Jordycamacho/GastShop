@@ -375,22 +375,18 @@ public class OrderController {
                 redirectAttributes.addFlashAttribute("error", "Debes iniciar sesión para realizar una compra.");
                 return "redirect:/login";
             }
-            // Verificar estado del pago
+            
             PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
             if (!"succeeded".equals(paymentIntent.getStatus())) {
                 redirectAttributes.addFlashAttribute("error", "El pago no fue exitoso");
                 return "redirect:/personalizar/" + customOrderDetail.getProductId();
             }
 
-            // Resto de tu lógica actual...
-            // Asignar el producto al DTO
             Product product = productService.getProductById(customOrderDetail.getProductId());
             customOrderDetail.setProduct(product);
 
-            // Obtener la configuración de precios
             PricingConfiguration pricing = pricingService.getPricingConfiguration();
 
-            // Calcular el costo adicional
             double additionalCost = calculateAdditionalCost(customOrderDetail, pricing);
             customOrderDetail.setAdditionalCost(additionalCost);
             OrderCustom orderCustom = orderService.createOrderCustom(customOrderDetail, paymentIntentId);
@@ -410,8 +406,6 @@ public class OrderController {
             redirectAttributes.addFlashAttribute("error", "Error verificando pago: " + e.getMessage());
             return "redirect:/personalizar/" + customOrderDetail.getProductId();
         }
-
-        // Crear la orden personalizada
 
     }
 
