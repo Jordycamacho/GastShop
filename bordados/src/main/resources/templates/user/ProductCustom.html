@@ -418,6 +418,20 @@
                         </div>
                         <input type="hidden" name="size" id="selectedSize">
                     </div>
+
+                    <div class="form-group">
+                        <label>Elige el tipo de ajuste*</label>
+                        <div class="fit-options">
+                            <button type="button" data-fit="STANDARD" class="size-option" onclick="selectFit(event)">
+                                Estándar
+                            </button>
+                            <button type="button" data-fit="OVERSIZE" class="size-option" onclick="selectFit(event)">
+                                Oversize
+                            </button>
+                        </div>
+                        <input type="hidden" name="fitType" id="selectedFit">
+                    </div>
+
                     <!-- Primer bordado -->
                     <div class="form-group">
                         <label>¿Qué primer diseño quieres bordar?*</label>
@@ -931,6 +945,13 @@
             document.getElementById('selectedSize').value = event.target.dataset.size;
         }
 
+        function selectFit(event) {
+            event.preventDefault();
+            document.querySelectorAll('.fit-option').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById('selectedFit').value = event.target.dataset.fit;
+        }
+
         function selectPlacement(event, inputId) {
             event.preventDefault();
             document.querySelectorAll('.placement-option').forEach(btn => btn.classList.remove('selected'));
@@ -951,6 +972,7 @@
         function validateForm(event) {
             let selectedColor = document.getElementById("selectedColor").value;
             let selectedSize = document.getElementById("selectedSize").value;
+            let selectedFit = document.getElementById("selectedFit").value;
             let firstEmbroideryFile = document.querySelector('input[name="firstEmbroideryFile"]').files.length > 0;
             let embroideryType = document.querySelector('select[name="embroideryType"]').value;
             let firstEmbroideryPlacement = document.getElementById("firstEmbroideryPlacement").value;
@@ -960,7 +982,7 @@
             let secondEmbroideryType = document.querySelector('select[name="secondEmbroideryType"]').value;
             let secondEmbroideryPlacement = document.getElementById("secondEmbroideryPlacement").value;
 
-            if (!selectedColor || !selectedSize || !firstEmbroideryFile || !embroideryType || !firstEmbroideryPlacement) {
+            if (!selectedColor || !selectedSize || !selectedFit || !firstEmbroideryFile || !embroideryType || !firstEmbroideryPlacement) {
                 event.preventDefault();
                 alert("Por favor, completa todos los campos requeridos antes de continuar.");
             }

@@ -275,11 +275,9 @@
                     <div class="form-group">
                         <label>Elige el color de tu prenda*</label>
                         <div class="color-options">
-                            <button th:each="color : ${product.colors}" 
-                                    th:data-color="${color}" 
-                                    class="color-option"
-                                    th:style="'background-color: ' + ${color.getColorCode()} + ';'" 
-                                    onclick="selectColor(event)">
+                            <button th:each="color : ${product.colors}" th:data-color="${color}" class="color-option"
+                                th:style="'background-color: ' + ${color.getColorCode()} + ';'"
+                                onclick="selectColor(event)">
                             </button>
                         </div>
                         <input type="hidden" name="color" id="selectedColor">
@@ -301,6 +299,19 @@
                             </button>
                         </div>
                         <input type="hidden" name="size" id="selectedSize">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Elige el tipo de ajuste*</label>
+                        <div class="fit-options">
+                            <button type="button" data-fit="STANDARD" class="size-option" onclick="selectFit(event)">
+                                Estándar
+                            </button>
+                            <button type="button" data-fit="OVERSIZE" class="size-option" onclick="selectFit(event)">
+                                Oversize
+                            </button>
+                        </div>
+                        <input type="hidden" name="fitType" id="selectedFit">
                     </div>
 
                     <button type="submit" data-tooltip="Carrito" class="button_int">
@@ -468,11 +479,19 @@
             document.getElementById('selectedSize').value = event.target.dataset.size;
         }
 
+        function selectFit(event) {
+            event.preventDefault();
+            document.querySelectorAll('.fit-option').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById('selectedFit').value = event.target.dataset.fit;
+        }
+
         function validateForm() {
             let selectedColor = document.getElementById("selectedColor").value;
             let selectedSize = document.getElementById("selectedSize").value;
+            let selectedFit = document.getElementById("selectedFit").value;
 
-            if (!selectedColor || !selectedSize) {
+            if (!selectedColor || !selectedSize || !selectedFit) {
                 alert("Por favor, completa todos los campos obligatorios antes de continuar.");
                 return false;
             }

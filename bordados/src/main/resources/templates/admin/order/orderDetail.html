@@ -34,6 +34,7 @@
                             <th>Producto</th>
                             <th>Talla</th>
                             <th>Color</th>
+                            <th>Ajuste</th>
                             <th>Precio Unitario</th>
                             <th>Total</th>
                         </tr>
@@ -44,6 +45,7 @@
                             <td th:text="${detail.product.name}"></td>
                             <td th:text="${detail.size}"></td>
                             <td th:text="${detail.color}"></td>
+                            <td th:text="${detail.fitType}"></td>
                             <td th:text="${detail.product.price}"></td>
                             <td th:text="${detail.quantity * detail.product.price}"></td>
                         </tr>
