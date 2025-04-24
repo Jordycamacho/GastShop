@@ -1471,7 +1471,7 @@ body {
 .item-name {
     font-size: var(--font-size-medium);
     margin-bottom: 5px;
-    color: var(--primary-color);
+    color: black;
 }
 
 .item-price {
@@ -1486,6 +1486,14 @@ body {
     gap: 10px;
 }
 
+.additional-items {
+    font-size: 0.8em;
+    color: #666;
+    margin-left: 5px;
+    background-color: #f0f0f0;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
 .quantity-btn {
     background-color: black;
     color: white;
