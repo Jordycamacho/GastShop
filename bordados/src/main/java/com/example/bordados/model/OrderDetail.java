@@ -1,10 +1,14 @@
 package com.example.bordados.model;
 
+import java.util.List;
+
 import com.example.bordados.model.Enums.Color;
 import com.example.bordados.model.Enums.FitType;
 import com.example.bordados.model.Enums.Size;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -37,17 +41,23 @@ public class OrderDetail {
 
     private int quantity;
 
+    @ElementCollection
+    @CollectionTable(name = "order_detail_sizes", joinColumns = @JoinColumn(name = "order_detail_id"))
+    @Column(name = "size")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Size size;
+    private List<Size> sizes;
 
+    @ElementCollection
+    @CollectionTable(name = "order_detail_colors", joinColumns = @JoinColumn(name = "order_detail_id"))
+    @Column(name = "color")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Color color;
+    private List<Color> colors;
 
+    @ElementCollection
+    @CollectionTable(name = "order_detail_fit_types", joinColumns = @JoinColumn(name = "order_detail_id"))
+    @Column(name = "fit_type")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private FitType fitType; 
+    private List<FitType> fitTypes;
 }
 
 
