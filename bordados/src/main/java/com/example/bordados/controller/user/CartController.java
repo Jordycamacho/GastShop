@@ -1,6 +1,8 @@
 package com.example.bordados.controller.user;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -47,7 +49,7 @@ public class CartController {
     public NoticesDTO getCurrentNotices() {
         return noticesService.getCurrentNotices();
     }
-    
+
     @GetMapping("")
     public String ShowViewCart(Model model, Principal principal) {
         User user = userService.getCurrentUser();
@@ -60,19 +62,48 @@ public class CartController {
     @PostMapping("/agregar")
     public String addToCart(@RequestParam Long productId,
             @RequestParam int quantity,
-            @RequestParam String size,
-            @RequestParam String color,
-            @RequestParam FitType fitType) {
+            @RequestParam("sizes") List<String> sizeStrings,
+            @RequestParam("colors") List<String> colorStrings,
+            @RequestParam("fits") List<String> fitStrings) {
 
-        User user = userService.getCurrentUser(); 
+        User user = userService.getCurrentUser();
 
         try {
-            Size selectedSize = Size.valueOf(size);
-            Color selectedColor = Color.valueOf(color);
+            // Convertir strings a enums con manejo de errores detallado
+            List<Size> sizes = new ArrayList<>();
+            for (String sizeStr : sizeStrings) {
+                try {
+                    sizes.add(Size.valueOf(sizeStr.trim().toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Talla inválida: " + sizeStr + ". Valores permitidos: " + Arrays.toString(Size.values()));
+                }
+            }
 
-            cartService.addProductToCart(user.getId(), productId, quantity, selectedSize, selectedColor, fitType);
+            List<Color> colors = new ArrayList<>();
+            for (String colorStr : colorStrings) {
+                try {
+                    colors.add(Color.valueOf(colorStr.trim().toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Color inválido: " + colorStr + ". Valores permitidos: " + Arrays.toString(Color.values()));
+                }
+            }
+
+            List<FitType> fits = new ArrayList<>();
+            for (String fitStr : fitStrings) {
+                try {
+                    fits.add(FitType.valueOf(fitStr.trim().toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Tipo de ajuste inválido: " + fitStr + ". Valores permitidos: "
+                                    + Arrays.toString(FitType.values()));
+                }
+            }
+
+            cartService.addProductToCart(user.getId(), productId, quantity, sizes, colors, fits);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Talla o color inválido" + e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en los datos: " + e.getMessage());
         }
 
         return "redirect:/bordados/carrito";
@@ -80,7 +111,7 @@ public class CartController {
 
     @PostMapping("/eliminar")
     public String removeFromCart(@RequestParam("cartId") Long cartId, Principal principal) {
-        
+
         cartService.removeFromCart(cartId);
 
         return "redirect:/bordados/carrito";

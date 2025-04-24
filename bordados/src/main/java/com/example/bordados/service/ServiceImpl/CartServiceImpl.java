@@ -38,10 +38,10 @@ public class CartServiceImpl implements CartService {
                     .productId(product.getId())
                     .productName(product.getName())
                     .quantity(cart.getQuantity())
-                    .size(cart.getSize())
-                    .color(cart.getColor())
+                    .sizes(cart.getSizes())
+                    .colors(cart.getColors())
                     .price(product.getPrice())
-                    .fitType(cart.getFitType())
+                    .fitTypes(cart.getFitTypes())
                     .image(!product.getImages().isEmpty() 
                           ? product.getImages().get(0) 
                           : "default.jpg")
@@ -51,21 +51,25 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addProductToCart(Long userId, Long productId, int quantity, Size size, Color color, FitType fitType) {
-        User user = userService.getUserById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public void addProductToCart(Long userId, Long productId, int quantity, List<Size> sizes, List<Color> colors, List<FitType> fitTypes) {
+        User user = userService.getCurrentUser();
         Product product = productService.getProductById(productId);
 
         if (product.getQuantity() < quantity) {
             throw new IllegalArgumentException("Cantidad no disponible");
         }
 
+        if (sizes.size() != quantity || colors.size() != quantity || fitTypes.size() != quantity) {
+            throw new IllegalArgumentException("Número de selecciones no coincide con la cantidad");
+        }
+
         Cart cart = new Cart();
         cart.setUser(user);
         cart.setProduct(product);
         cart.setQuantity(quantity);
-        cart.setSize(size);
-        cart.setColor(color);
-        cart.setFitType(fitType);
+        cart.setSizes(sizes);
+        cart.setColors(colors);
+        cart.setFitTypes(fitTypes);
 
         cartRepository.save(cart);
     }
