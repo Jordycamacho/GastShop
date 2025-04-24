@@ -255,7 +255,7 @@
                 <p class="product-price" th:text="${product.price} + '0 $'"></p>
 
                 <form th:if="${product.quantity > 0}" th:action="@{/bordados/carrito/agregar}" method="post"
-                    onsubmit="return validateForm()">
+                    onsubmit="return prepareFormData()">
                     <input type="hidden" name="productId" th:value="${product.id}">
 
                     <!-- Cantidad -->
@@ -264,56 +264,115 @@
                         <div class="quantity-selector">
                             <button type="button" class="quantity-btn" onclick="updateQuantity(-1)">-</button>
                             <input type="number" name="quantity" id="quantity" th:max="${product.quantity}"
-                                th:min="${product.minQuantity}" th:value="${product.minQuantity}"
-                                class="quantity-input" required>
+                                th:min="${product.minQuantity}" th:value="${product.minQuantity}" class="quantity-input"
+                                required>
                             <button type="button" class="quantity-btn" onclick="updateQuantity(1)">+</button>
                         </div>
                     </div>
 
                     <!--<p th:text="'Disponibles: ' + ${product.quantity}"></p>-->
 
-                    <!-- Elige el color -->
-                    <div class="form-group">
-                        <label>Elige el color de tu prenda*</label>
-                        <div class="color-options">
-                            <button th:each="color : ${product.colors}" th:data-color="${color}" class="color-option"
-                                th:style="'background-color: ' + ${color.getColorCode()} + ';'"
-                                onclick="selectColor(event)">
-                            </button>
+
+                    <div id="selectionContainer">
+                        <!-- Selección 1 (siempre visible) -->
+                        <div class="selection-block">
+                            <h4>Producto 1</h4>
+                            <!-- Color -->
+                            <div class="form-group">
+                                <label>Elige el color de tu prenda*</label>
+                                <div class="color-options">
+                                    <button th:each="color : ${product.colors}" th:data-color="${color}"
+                                        class="color-option"
+                                        th:style="'background-color: ' + ${color.getColorCode()} + ';'"
+                                        onclick="selectColor(event, 0)">
+                                    </button>
+                                </div>
+                                <input type="hidden" name="colors[0]" id="selectedColor0">
+                            </div>
+
+                            <!-- Talla -->
+                            <div class="form-group">
+                                <div class="size-guide-header">
+                                    <label>Elige tu talla*</label>
+                                    <button type="button" class="size-guide-btn" onclick="openSizeGuide()">
+                                        Guía de tallas <i class="fas fa-ruler"></i>
+                                    </button>
+                                </div>
+                                <div class="size-options">
+                                    <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
+                                        onclick="selectSize(event, 0)">
+                                        [[${size}]]
+                                    </button>
+                                </div>
+                                <input type="hidden" name="sizes[0]" id="selectedSize0">
+                            </div>
+
+                            <!-- Ajuste -->
+                            <div class="form-group">
+                                <label>Elige el tipo de ajuste*</label>
+                                <div class="fit-options">
+                                    <button type="button" data-fit="STANDARD" class="fit-option"
+                                        onclick="selectFit(event, 0)">
+                                        Estándar
+                                    </button>
+                                    <button type="button" data-fit="OVERSIZE" class="fit-option"
+                                        onclick="selectFit(event, 0)">
+                                        Oversize
+                                    </button>
+                                </div>
+                                <input type="hidden" name="fits[0]" id="selectedFit0">
+                            </div>
                         </div>
-                        <input type="hidden" name="color" id="selectedColor">
+
+                        <!-- Selección 2 (visible si cantidad mínima es 2) -->
+                        <div class="selection-block" th:if="${product.minQuantity >= 2}">
+                            <h4>Producto 2</h4>
+                            <!-- Misma estructura que la selección 1 pero con índice 1 -->
+                            <div class="form-group">
+                                <label>Elige el color de tu prenda*</label>
+                                <div class="color-options">
+                                    <button th:each="color : ${product.colors}" th:data-color="${color}"
+                                        class="color-option"
+                                        th:style="'background-color: ' + ${color.getColorCode()} + ';'"
+                                        onclick="selectColor(event, 1)">
+                                    </button>
+                                </div>
+                                <input type="hidden" name="colors[1]" id="selectedColor1">
+                            </div>
+
+                            <div class="form-group">
+                                <div class="size-guide-header">
+                                    <label>Elige tu talla*</label>
+                                    <button type="button" class="size-guide-btn" onclick="openSizeGuide()">
+                                        Guía de tallas <i class="fas fa-ruler"></i>
+                                    </button>
+                                </div>
+                                <div class="size-options">
+                                    <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
+                                        onclick="selectSize(event, 1)">
+                                        [[${size}]]
+                                    </button>
+                                </div>
+                                <input type="hidden" name="sizes[1]" id="selectedSize1">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Elige el tipo de ajuste*</label>
+                                <div class="fit-options">
+                                    <button type="button" data-fit="STANDARD" class="fit-option"
+                                        onclick="selectFit(event, 1)">
+                                        Estándar
+                                    </button>
+                                    <button type="button" data-fit="OVERSIZE" class="fit-option"
+                                        onclick="selectFit(event, 1)">
+                                        Oversize
+                                    </button>
+                                </div>
+                                <input type="hidden" name="fits[1]" id="selectedFit1">
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Elige tu talla -->
-                    <div class="form-group">
-                        <div class="size-guide-header">
-                            <label>Elige tu talla*</label>
-                            <button type="button" class="size-guide-btn" onclick="openSizeGuide()">
-                                Guía de tallas <i class="fas fa-ruler"></i>
-                            </button>
-                        </div>
-
-                        <div class="size-options">
-                            <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
-                                onclick="selectSize(event)">
-                                [[${size}]]
-                            </button>
-                        </div>
-                        <input type="hidden" name="size" id="selectedSize">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Elige el tipo de ajuste*</label>
-                        <div class="fit-options">
-                            <button type="button" data-fit="STANDARD" class="size-option" onclick="selectFit(event)">
-                                Estándar
-                            </button>
-                            <button type="button" data-fit="OVERSIZE" class="size-option" onclick="selectFit(event)">
-                                Oversize
-                            </button>
-                        </div>
-                        <input type="hidden" name="fitType" id="selectedFit">
-                    </div>
 
                     <button type="submit" data-tooltip="Carrito" class="button_int">
                         <div class="button_cart">
@@ -360,8 +419,56 @@
                 </div>
             </div>
         </div>
-    </main>
 
+        <template id="selectionTemplate">
+            <div class="selection-block">
+                <h4>Producto __index__</h4>
+                <div class="form-group">
+                    <label>Elige el color de tu prenda*</label>
+                    <div class="color-options">
+                        <button th:each="color : ${product.colors}" th:data-color="${color}" class="color-option"
+                            th:style="'background-color: ' + ${color.getColorCode()} + ';'"
+                            onclick="selectColor(event, __index__)">
+                        </button>
+                    </div>
+                    <input type="hidden" name="colors[__index__]" id="selectedColor__index__">
+                </div>
+
+                <div class="form-group">
+                    <div class="size-guide-header">
+                        <label>Elige tu talla*</label>
+                        <button type="button" class="size-guide-btn" onclick="openSizeGuide()">
+                            Guía de tallas <i class="fas fa-ruler"></i>
+                        </button>
+                    </div>
+                    <div class="size-options">
+                        <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
+                            onclick="selectSize(event, __index__)">
+                            [[${size}]]
+                        </button>
+                    </div>
+                    <input type="hidden" name="sizes[__index__]" id="selectedSize__index__">
+                </div>
+
+                <div class="form-group">
+                    <label>Elige el tipo de ajuste*</label>
+                    <div class="fit-options">
+                        <button type="button" data-fit="STANDARD" class="fit-option"
+                            onclick="selectFit(event, __index__)">
+                            Estándar
+                        </button>
+                        <button type="button" data-fit="OVERSIZE" class="fit-option"
+                            onclick="selectFit(event, __index__)">
+                            Oversize
+                        </button>
+                    </div>
+                    <input type="hidden" name="fits[__index__]" id="selectedFit__index__">
+                </div>
+            </div>
+        </template>
+
+    </main>
+    <!-- Faquiiiiiiiiiiii -->
     <footer class="footer" th:insert="~{user/templateUser.html::footer}"></footer>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -457,48 +564,96 @@
         });
     </script>
     <script>
-        function updateQuantity(change) {
-            let quantityInput = document.getElementById('quantity');
-            let maxQuantity = parseInt(quantityInput.getAttribute('max'));
-            let newValue = parseInt(quantityInput.value) + change;
-            if (newValue >= 1 && newValue <= maxQuantity) {
-                quantityInput.value = newValue;
+        document.getElementById('quantity').addEventListener('input', updateSelections);
+
+        const selectedValues = {
+            sizes: [],
+            colors: [],
+            fits: []
+        };
+
+        function updateSelections() {
+            const container = document.getElementById('selectionContainer');
+            const template = document.getElementById('selectionTemplate').innerHTML;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            container.innerHTML = '';
+
+            for (let i = 0; i < quantity; i++) {
+                const html = template.replaceAll('__index__', i + 1);
+                container.insertAdjacentHTML('beforeend', html);
             }
         }
 
-        function selectColor(event) {
+        function selectColor(event, index) {
             event.preventDefault();
-            document.querySelectorAll('.color-option').forEach(btn => btn.classList.remove('selected'));
+            document.querySelectorAll(`#selectedColor${index} ~ .color-options .color-option`).forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
-            document.getElementById('selectedColor').value = event.target.dataset.color;
+            document.getElementById(`selectedColor${index}`).value = event.target.dataset.color;
+
+            // Actualizar el array de colores
+            selectedValues.colors[index] = event.target.dataset.color;
         }
 
-        function selectSize(event) {
+        function selectSize(event, index) {
             event.preventDefault();
-            document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('selected'));
+            document.querySelectorAll(`#selectedSize${index} ~ .size-options .size-option`).forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
-            document.getElementById('selectedSize').value = event.target.dataset.size;
+
+            // Asegúrate que el valor sea exactamente igual al enum (incluyendo mayúsculas)
+            const sizeValue = event.target.dataset.size.toUpperCase(); // Convertir a mayúsculas
+            document.getElementById(`selectedSize${index}`).value = sizeValue;
+            selectedValues.sizes[index] = sizeValue;
         }
 
-        function selectFit(event) {
+        function selectFit(event, index) {
             event.preventDefault();
-            document.querySelectorAll('.fit-option').forEach(btn => btn.classList.remove('selected'));
+            document.querySelectorAll(`#selectedFit${index} ~ .fit-options .fit-option`).forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
-            document.getElementById('selectedFit').value = event.target.dataset.fit;
+            document.getElementById(`selectedFit${index}`).value = event.target.dataset.fit;
+
+            // Actualizar el array de ajustes
+            selectedValues.fits[index] = event.target.dataset.fit;
         }
 
-        function validateForm() {
-            let selectedColor = document.getElementById("selectedColor").value;
-            let selectedSize = document.getElementById("selectedSize").value;
-            let selectedFit = document.getElementById("selectedFit").value;
+        function prepareFormData() {
+            const form = document.querySelector('form');
+            const quantity = parseInt(document.getElementById('quantity').value);
 
-            if (!selectedColor || !selectedSize || !selectedFit) {
-                alert("Por favor, completa todos los campos obligatorios antes de continuar.");
-                return false;
+            console.log("Valores a enviar:", {
+                sizes: selectedValues.sizes,
+                colors: selectedValues.colors,
+                fits: selectedValues.fits
+            });
+
+            // Eliminar inputs antiguos si existen
+            document.querySelectorAll('input[name^="sizes["], input[name^="colors["], input[name^="fits["]').forEach(el => el.remove());
+
+            // Agregar nuevos inputs para cada selección
+            for (let i = 0; i < quantity; i++) {
+                addHiddenInput(form, 'sizes', selectedValues.sizes[i] || '');
+                addHiddenInput(form, 'colors', selectedValues.colors[i] || '');
+                addHiddenInput(form, 'fits', selectedValues.fits[i] || '');
             }
 
             return true;
         }
+
+        function addHiddenInput(form, name, value) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            form.appendChild(input);
+        }
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (!validateForm()) {
+                e.preventDefault();
+                return false;
+            }
+            prepareFormData();
+        });
+
     </script>
     <div th:insert="~{user/templateUser.html::script}"></div>
 </body>

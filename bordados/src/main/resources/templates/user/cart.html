@@ -27,31 +27,42 @@
                     <div class="item-details">
                         <h3 class="item-name" th:text="${cartItem.productName}"></h3>
                         <p class="item-price" th:text="'$' + ${cartItem.price}"></p>
-
+    
                         <!-- Mostrar cantidad sin permitir cambios -->
                         <p class="item-quantity">Cantidad: <span th:text="${cartItem.quantity}"></span></p>
-
+    
                         <!-- Color seleccionado -->
                         <div class="selected-color">
                             <span>Color:</span>
-                            <div class="color-box" th:style="'background-color:' + ${cartItem.color} + ';'"></div>
+                            <div class="color-box" th:style="'background-color:' + ${cartItem.colors[0]} + ';'"></div>
+                            <span th:if="${cartItem.colors.size() > 1}" class="additional-items">
+                                más...
+                            </span>
                         </div>
-
+    
                         <!-- Talla seleccionada -->
-                        <p class="selected-size">Talla: <span th:text="${cartItem.size}"></span></p>
-                        <p class="selected-fit">Ajuste: 
-                            <span th:text="${cartItem.fitType}"></span>
+                        <p class="selected-size">
+                            Talla: <span th:text="${cartItem.sizes[0]}"></span>
+                            <span th:if="${cartItem.sizes.size() > 1}" class="additional-items">
+                                más...
+                            </span>
+                        </p>
+    
+                        <!-- Ajuste seleccionado -->
+                        <p class="selected-fit">
+                            Ajuste: <span th:text="${cartItem.fitTypes[0]}"></span>
+                            <span th:if="${cartItem.fitTypes.size() > 1}" class="additional-items">
+                                más...
+                            </span>
                         </p>
                     </div>
-
-                    <!-- Botón para eliminar producto -->
+    
+                    <!-- Botón para eliminar producto (se mantiene igual) -->
                     <form th:action="@{/bordados/carrito/eliminar}" method="post">
                         <input type="hidden" name="cartId" th:value="${cartItem.id}">
                         <button type="submit" class="button_remove">
                             <svg viewBox="0 0 448 512" class="svgIcon_remove">
-                                <path
-                                    d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z">
-                                </path>
+                                <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
                             </svg>
                         </button>
                     </form>
