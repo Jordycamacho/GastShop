@@ -52,12 +52,7 @@
                                     <p><strong>Color:</strong> <span th:text="${detail.color}"></span></p>
                                 </div>
                                 <div class="col-md-3">
-                                    <p><strong>Ajuste:</strong> <span th:text="${detail.fitType}"></span></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <p><strong>Total:</strong> <span
-                                            th:text="${detail.quantity * detail.product.price + detail.additionalCost}"></span>
-                                    </p>
+                                    <p><strong>Ajuste:</strong> <span th:text="${detail.fitType?.name()}"></span></p>
                                 </div>
                             </div>
 

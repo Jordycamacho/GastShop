@@ -581,7 +581,7 @@
                             ¿Quieres ver cómo quedaría tu bordado?
                         </a>
                     </div>
-
+                    <div id="card-errors" class="error-message" style="color: red; margin: 10px 0;"></div>
                     <div class="payment-section">
                         <h2>Pago con Tarjeta</h2>
                         <div id="card-element"></div>
@@ -943,6 +943,13 @@
             document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
             document.getElementById('selectedSize').value = event.target.dataset.size;
+
+            const selectedFit = document.getElementById('selectedFit').value;
+            if (selectedFit === 'OVERSIZE' && (event.target.dataset.size === 'XXL' || event.target.dataset.size === 'XXXL')) {
+                alert('No se puede seleccionar talla ' + event.target.dataset.size + ' con ajuste Oversize');
+                document.getElementById('selectedSize').value = '';
+                event.target.classList.remove('selected');
+            }
         }
 
         function selectFit(event) {
@@ -950,6 +957,15 @@
             document.querySelectorAll('.fit-option').forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
             document.getElementById('selectedFit').value = event.target.dataset.fit;
+
+            if (event.target.dataset.fit === 'OVERSIZE') {
+                const selectedSize = document.getElementById('selectedSize').value;
+                if (selectedSize === 'XXL' || selectedSize === 'XXXL') {
+                    alert('No se puede seleccionar talla ' + selectedSize + ' con ajuste Oversize');
+                    document.getElementById('selectedSize').value = '';
+                    document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('selected'));
+                }
+            }
         }
 
         function selectPlacement(event, inputId) {
@@ -998,27 +1014,46 @@
             const errorContainer = document.getElementById('card-errors');
             errorContainer.textContent = '';
 
+            const selectedColor = document.getElementById('selectedColor').value;
+            const selectedSize = document.getElementById('selectedSize').value;
+            const selectedFit = document.getElementById('selectedFit').value;
+            const firstEmbroideryFile = document.querySelector('input[name="firstEmbroideryFile"]').files[0];
+            const hasSecondEmbroidery = document.querySelector('input[name="hasSecondEmbroidery"]:checked').value === 'true';
+            const secondEmbroideryFile = hasSecondEmbroidery ? document.querySelector('input[name="secondEmbroideryFile"]').files[0] : null;
+
             // Validar campos requeridos
-            if (!document.getElementById('selectedColor').value) {
+            if (!selectedColor) {
                 isValid = false;
                 errorContainer.textContent += 'Selecciona un color\n';
             }
 
-            if (!document.getElementById('selectedSize').value) {
+            if (!selectedSize) {
                 isValid = false;
                 errorContainer.textContent += 'Selecciona una talla\n';
             }
 
-            if (!document.querySelector('input[name="firstEmbroideryFile"]').files[0]) {
+            if (!selectedFit) {
+                isValid = false;
+                errorContainer.textContent += 'Selecciona un tipo de ajuste\n';
+            }
+
+            if (!firstEmbroideryFile) {
                 isValid = false;
                 errorContainer.textContent += 'Sube un diseño para el primer bordado\n';
             }
 
-            if (document.querySelector('input[name="hasSecondEmbroidery"]:checked').value === 'true') {
-                if (!document.querySelector('input[name="secondEmbroideryFile"]').files[0]) {
-                    isValid = false;
-                    errorContainer.textContent += 'Sube un diseño para el segundo bordado\n';
-                }
+            if (hasSecondEmbroidery && !secondEmbroideryFile) {
+                isValid = false;
+                errorContainer.textContent += 'Sube un diseño para el segundo bordado\n';
+            }
+
+            if (selectedFit === 'OVERSIZE' && (selectedSize === 'XXL' || selectedSize === 'XXXL')) {
+                isValid = false;
+                errorContainer.textContent += 'No se puede seleccionar talla ' + selectedSize + ' con ajuste Oversize\n';
+            }
+
+            if (!isValid) {
+                alert(errorContainer.textContent);
             }
 
             return isValid;

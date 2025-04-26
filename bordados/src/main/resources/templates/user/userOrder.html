@@ -158,32 +158,69 @@
             text-decoration: underline;
         }
 
-        @media (max-width: 768px) {
-        /* Ajustes SOLO para móvil: */
-        main {
-            max-width: 100%;  
-            padding: 5px; 
-            margin: 5px auto;
-        }
-
-        .order-details, 
-        .payment-section {
-            padding: 1px;  
+        /* Estilos para las listas de selecciones */
+        .color-box {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            vertical-align: middle;
+            margin-right: 5px;
         }
 
         table {
             width: 100%;
-            max-width: 100%;
-            display: table;
             border-collapse: collapse;
-            margin: 0;    
+            margin: 20px 0;
         }
 
-        th, td {
-            padding: 6px 2px; 
-            font-size: 14px;  
+        table th,
+        table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
         }
-    }
+
+        table th {
+            background-color: #f5f5f5;
+        }
+
+        /* Estilo para las celdas con múltiples valores */
+        td span {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+
+            /* Ajustes SOLO para móvil: */
+            main {
+                max-width: 100%;
+                padding: 5px;
+                margin: 5px auto;
+            }
+
+            .order-details,
+            .payment-section {
+                padding: 1px;
+            }
+
+            table {
+                width: 100%;
+                max-width: 100%;
+                display: table;
+                border-collapse: collapse;
+                margin: 0;
+            }
+
+            th,
+            td {
+                padding: 6px 2px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 
@@ -203,8 +240,9 @@
                         <tr>
                             <th>Producto</th>
                             <th>Cantidad</th>
-                            <th>Talla</th>
-                            <th>Color</th>
+                            <th>Tallas</th>
+                            <th>Colores</th>
+                            <th>Ajustes</th>
                             <th>Precio</th>
                         </tr>
                     </thead>
@@ -212,8 +250,24 @@
                         <tr th:each="item : ${cartItems}">
                             <td>[[${item.productName}]]</td>
                             <td>[[${item.quantity}]]</td>
-                            <td>[[${item.size}]]</td>
-                            <td>[[${item.color}]]</td>
+                            <td>
+                                <span th:each="size, iter : ${item.sizes}">
+                                    [[${size}]]
+                                    <span th:if="${not iter.last}">, </span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:each="color, iter : ${item.colors}">
+                                    [[${color}]]
+                                    <span th:if="${not iter.last}">, </span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:each="fit, iter : ${item.fitTypes}">
+                                    [[${fit}]]
+                                    <span th:if="${not iter.last}">, </span>
+                                </span>
+                            </td>
                             <td>[[${item.price}]] $</td>
                         </tr>
                     </tbody>
@@ -226,7 +280,6 @@
                 </div>
 
                 <p><strong>Total:</strong> <span id="totalAmount">[[${total}]]</span> $</p>
-
             </div>
 
             <div class="payment-section">

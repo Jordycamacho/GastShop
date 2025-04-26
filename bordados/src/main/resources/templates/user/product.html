@@ -274,10 +274,9 @@
 
 
                     <div id="selectionContainer">
-                        <!-- Selección 1 (siempre visible) -->
                         <div class="selection-block">
                             <h4>Producto 1</h4>
-                            <!-- Color -->
+                            <input type="hidden" name="colors[0]" id="selectedColor0">
                             <div class="form-group">
                                 <label>Elige el color de tu prenda*</label>
                                 <div class="color-options">
@@ -327,7 +326,7 @@
                         <!-- Selección 2 (visible si cantidad mínima es 2) -->
                         <div class="selection-block" th:if="${product.minQuantity >= 2}">
                             <h4>Producto 2</h4>
-                            <!-- Misma estructura que la selección 1 pero con índice 1 -->
+                            <input type="hidden" name="colors[1]" id="selectedColor1">
                             <div class="form-group">
                                 <label>Elige el color de tu prenda*</label>
                                 <div class="color-options">
@@ -578,9 +577,19 @@
             const quantity = parseInt(document.getElementById('quantity').value);
             container.innerHTML = '';
 
+            // Resetear los arrays cuando cambia la cantidad
+            selectedValues.sizes = [];
+            selectedValues.colors = [];
+            selectedValues.fits = [];
+
             for (let i = 0; i < quantity; i++) {
-                const html = template.replaceAll('__index__', i + 1);
+                const html = template.replaceAll('__index__', i);
                 container.insertAdjacentHTML('beforeend', html);
+
+                // Inicializar los valores para este índice
+                selectedValues.sizes[i] = '';
+                selectedValues.colors[i] = '';
+                selectedValues.fits[i] = '';
             }
         }
 
@@ -599,8 +608,7 @@
             document.querySelectorAll(`#selectedSize${index} ~ .size-options .size-option`).forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
 
-            // Asegúrate que el valor sea exactamente igual al enum (incluyendo mayúsculas)
-            const sizeValue = event.target.dataset.size.toUpperCase(); // Convertir a mayúsculas
+            const sizeValue = event.target.dataset.size.toUpperCase();
             document.getElementById(`selectedSize${index}`).value = sizeValue;
             selectedValues.sizes[index] = sizeValue;
         }
@@ -641,7 +649,7 @@
         function addHiddenInput(form, name, value) {
             const input = document.createElement('input');
             input.type = 'hidden';
-            input.name = name;
+            input.name = name + '[]'; // Cambiado para usar arrays PHP
             input.value = value;
             form.appendChild(input);
         }
@@ -651,9 +659,34 @@
                 e.preventDefault();
                 return false;
             }
-            prepareFormData();
+            return prepareFormData();
         });
 
+        function validateForm() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            let isValid = true;
+
+            for (let i = 0; i < quantity; i++) {
+                // Usar los valores de selectedValues en lugar de buscar en el DOM
+                const color = selectedValues.colors[i];
+                const size = selectedValues.sizes[i];
+                const fit = selectedValues.fits[i];
+
+                if (!color || !size || !fit) {
+                    isValid = false;
+                    alert(`Por favor, completa todas las opciones para el Producto ${i + 1}`);
+                    break;
+                }
+
+                if (fit === 'OVERSIZE' && (size === 'XXL' || size === 'XXXL')) {
+                    isValid = false;
+                    alert(`Error en Producto ${i + 1}: No se puede seleccionar talla ${size} con ajuste Oversize`);
+                    break;
+                }
+            }
+
+            return isValid;
+        }
     </script>
     <div th:insert="~{user/templateUser.html::script}"></div>
 </body>
