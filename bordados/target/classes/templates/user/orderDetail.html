@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAST</title>
+    <title>GastShop</title>
+    <link rel="icon" th:href="@{/images/favicon-16x16.png}" type="image/png">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -49,6 +50,7 @@
                                 <th>Producto</th>
                                 <th>Talla</th>
                                 <th>Color</th>
+                                <th>Ajuste</th>
                                 <th>Precio Unitario</th>
                                 <th>Total</th>
                             </tr>
@@ -57,8 +59,24 @@
                             <tr th:each="detail : ${orderDetails}">
                                 <td th:text="${detail.quantity}"></td>
                                 <td th:text="${detail.product.name}"></td>
-                                <td th:text="${detail.size}"></td>
-                                <td th:text="${detail.color}"></td>
+                                <td>
+                                    <span th:each="size, iter : ${detail.sizes}">
+                                        [[${size}]]
+                                        <span th:if="${not iter.last}">, </span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:each="color, iter : ${detail.colors}">
+                                        [[${color}]]
+                                        <span th:if="${not iter.last}">, </span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:each="fit, iter : ${detail.fitTypes}">
+                                        [[${fit}]]
+                                        <span th:if="${not iter.last}">, </span>
+                                    </span>
+                                </td>
                                 <td th:text="${detail.product.price}"></td>
                                 <td th:text="${detail.quantity * detail.product.price}"></td>
                             </tr>
@@ -67,10 +85,6 @@
                 </div>
             </div>
 
-            <!-- Total de la Orden -->
-            <div class="mt-4">
-                <h4>Total de la Orden: <span th:text="${order.total}"></span></h4>
-            </div>
         </div>
 
     </main>

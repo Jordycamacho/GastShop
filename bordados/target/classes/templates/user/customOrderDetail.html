@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAST</title>
+    <title>GastShop</title>
+    <link rel="icon" th:href="@{/images/favicon-16x16.png}" type="image/png">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -66,10 +67,9 @@
                                         <p><strong>Color:</strong> <span th:text="${detail.color}"></span></p>
                                     </div>
                                     <div class="col-md-3">
-                                        <p><strong>Total:</strong> <span
-                                                th:text="${detail.quantity * detail.product.price + detail.additionalCost}"></span>
-                                        </p>
+                                        <p><strong>Ajuste:</strong> <span th:text="${detail.fitType?.name()}"></span></p>
                                     </div>
+                                    
                                 </div>
 
                                 <!-- Bordado Principal -->

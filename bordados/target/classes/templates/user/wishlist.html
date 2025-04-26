@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Favoritos</title>
+    <title>GastShop</title>
+    <link rel="icon" th:href="@{/images/favicon-16x16.png}" type="image/png">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -18,7 +19,10 @@
             <div class="bestsellers-grid">
                 <div class="product-card" th:each="product : ${products}">
                     <button class="favorite-btn" th:attr="onclick=|window.location.href='@{/bordados/wishlist/remove/{id}(id=${product.id})}'|">❌</button>
-                    <img th:src="@{'/images/' + ${product.image}}" alt="Producto" class="product-image">
+                    <img th:src="@{'/images/' + ${product.imagePaths[0]}}" 
+                    th:alt="${product.name}" 
+                    class="product-image"
+                    onerror="this.src='/images/default.jpg'">
                     <h3 class="product-name" th:text="${product.name}"></h3>
                     <p class="product-price" th:text="${product.price} + '0 $'"></p>
                     <a th:href="@{/bordados/producto/{id}(id=${product.id})}">

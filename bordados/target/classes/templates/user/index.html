@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAST</title>
+    <title>GastShop</title>
+    <link rel="icon" th:href="@{/images/favicon.ico}" type="image/png">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -21,30 +22,35 @@
                 <a th:each="product : ${customizableProducts}"
                     th:href="@{'/bordados/producto/personalizar/' + ${product.id}}" class="collection-item">
                     <div class="collection-image">
-                        <img th:src="@{'/images/' + ${product.image}}" th:alt="${product.name}">
+                        <img th:src="@{'/images/' + ${product.images[0]}}" th:alt="${product.name}"
+                            onerror="this.src='/images/default.jpg'">
                         <div class="collection-name" th:text="${product.name}"></div>
                     </div>
                 </a>
             </div>
         </section>
 
-
         <section class="bestsellers">
-            <h2>BESTSELLERS</h2>
+            <h2>MÁS VENDIDOS</h2>
             <div class="bestsellers-grid">
                 <div th:each="product : ${bestsellers}" class="product-card">
                     <button class="favorite-btn"
-                        th:attr="onclick=|window.location.href='@{/bordados/wishlist/add/{id}(id=${product.id})}'|">
+                        th:onclick="|window.location.href='@{/bordados/wishlist/add/{id}(id=${product.id})}'|">
                         ❤️
                     </button>
-                    <img th:src="@{'/images/' + ${product.image}}" th:alt="${product.name}" class="product-image">
-                    <h3 class="product-name" th:text="${product.name}"></h3>
-                    <p class="product-price">
-                        $<span th:text="${product.price}"></span>
-                        <span class="old-price" th:if="${product.discount > 0}">
-                            $<span th:text="${product.price + product.discount}"></span>
-                        </span>
-                    </p>
+
+                    <a th:href="@{/bordados/producto/vista/{id}(id=${product.id})}" class="product-link">
+                        <img th:src="@{'/images/' + ${product.images[0]}}" th:alt="${product.name}"
+                            class="product-image" onerror="this.src='/images/default.jpg'">
+                        <h3 class="product-name" th:text="${product.name}"></h3>
+                        <p class="product-price">
+                            $<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></span>
+                            <span class="old-price" th:if="${product.discount > 0}">
+                                $<span
+                                    th:text="${#numbers.formatDecimal(product.price + product.discount, 1, 2)}"></span>
+                            </span>
+                        </p>
+                    </a>
                     <a th:href="@{/bordados/producto/vista/{id}(id=${product.id})}">
                         <button class="c-button c-button--gooey">
                             Seleccionar
@@ -58,7 +64,6 @@
                 </div>
             </div>
         </section>
-
 
         <section class="customize-section">
             <div class="customize-video">
@@ -68,8 +73,9 @@
                 </video>
                 <div class="customize-content">
                     <button class="button_home" data-text="Awesome">
-                        <span class="actual-text">&nbsp;EXPLORA_NUESTRO_CONTENIDO&nbsp;</span>
-                        <span aria-hidden="true" class="hover-text">&nbsp;EXPLORA_NUESTRO_CONTENIDO&nbsp;</span>
+                        <span class="actual-text" th:text="${currentNotices.bannerSecondary}">&nbsp;&nbsp;</span>
+                        <span aria-hidden="true" class="hover-text"
+                            th:text="${currentNotices.bannerSecondary}">&nbsp;&nbsp;</span>
                     </button>
                 </div>
             </div>
@@ -78,19 +84,24 @@
         <section class="bestsellers">
             <h2>OTROS PRODUCTOS</h2>
             <div class="bestsellers-grid">
-                <div th:each="product : ${randomProducts}" class="product-card">
+                <div th:each="product : ${bestsellers}" class="product-card">
                     <button class="favorite-btn"
-                        th:attr="onclick=|window.location.href='@{/bordados/wishlist/add/{id}(id=${product.id})}'|">
+                        th:onclick="|window.location.href='@{/bordados/wishlist/add/{id}(id=${product.id})}'|">
                         ❤️
                     </button>
-                    <img th:src="@{'/images/' + ${product.image}}" th:alt="${product.name}" class="product-image">
-                    <h3 class="product-name" th:text="${product.name}"></h3>
-                    <p class="product-price">
-                        $<span th:text="${product.price}"></span>
-                        <span class="old-price" th:if="${product.discount > 0}">
-                            $<span th:text="${product.price + product.discount}"></span>
-                        </span>
-                    </p>
+
+                    <a th:href="@{/bordados/producto/vista/{id}(id=${product.id})}" class="product-link">
+                        <img th:src="@{'/images/' + ${product.images[0]}}" th:alt="${product.name}"
+                            class="product-image" onerror="this.src='/images/default.jpg'">
+                        <h3 class="product-name" th:text="${product.name}"></h3>
+                        <p class="product-price">
+                            $<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></span>
+                            <span class="old-price" th:if="${product.discount > 0}">
+                                $<span
+                                    th:text="${#numbers.formatDecimal(product.price + product.discount, 1, 2)}"></span>
+                            </span>
+                        </p>
+                    </a>
                     <a th:href="@{/bordados/producto/vista/{id}(id=${product.id})}">
                         <button class="c-button c-button--gooey">
                             Seleccionar
@@ -105,8 +116,23 @@
             </div>
         </section>
 
+        <section class="featured-collections">
+            <h2 class="featured-collections-title">COLECCIONES</h2>
+            <div class="collections-container">
+                <a th:each="collection : ${collections}" th:href="@{'bordados/colecciones/' + ${collection.id}}"
+                    class="collection-card">
+                    <div class="collection-image-wrapper">
+                        <img th:src="@{'/images/' + ${collection.imageCollection}}"
+                            th:alt="${collection.nameCollection}" class="collection-img"
+                            onerror="this.src='/images/default.jpg'">
+                        <div class="collection-overlay">
+                            <h3 class="collection-title" th:text="${collection.nameCollection}"></h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
     </main>
-
     <footer class="footer" th:insert="~{user/templateUser.html::footer}"></footer>
     <div th:insert="~{user/templateUser.html::script}"></div>
 </body>

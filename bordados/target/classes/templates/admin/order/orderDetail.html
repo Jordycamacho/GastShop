@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{admin/category/templateAdmin.html::header}"></head>
 <body>
@@ -32,8 +33,9 @@
                         <tr>
                             <th>Cantidad</th>
                             <th>Producto</th>
-                            <th>Talla</th>
-                            <th>Color</th>
+                            <th>Tallas</th>
+                            <th>Colores</th>
+                            <th>Ajustes</th>
                             <th>Precio Unitario</th>
                             <th>Total</th>
                         </tr>
@@ -42,8 +44,24 @@
                         <tr th:each="detail : ${orderDetails}">
                             <td th:text="${detail.quantity}"></td>
                             <td th:text="${detail.product.name}"></td>
-                            <td th:text="${detail.size}"></td>
-                            <td th:text="${detail.color}"></td>
+                            <td>
+                                <span th:each="size, iter : ${detail.sizes}">
+                                    [[${size}]]
+                                    <span th:if="${not iter.last}">, </span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:each="color, iter : ${detail.colors}">
+                                    [[${color}]]
+                                    <span th:if="${not iter.last}">, </span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:each="fit, iter : ${detail.fitTypes}">
+                                    [[${fit}]]
+                                    <span th:if="${not iter.last}">, </span>
+                                </span>
+                            </td>
                             <td th:text="${detail.product.price}"></td>
                             <td th:text="${detail.quantity * detail.product.price}"></td>
                         </tr>

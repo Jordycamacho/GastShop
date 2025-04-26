@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAST</title>
+    <title>GastShop</title>
+    <link rel="icon" th:href="@{/images/favicon-16x16.png}" type="image/png">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -17,63 +19,359 @@
             margin: 0 auto;
             text-align: center;
         }
+
+        .swiper {
+            width: 100%;
+            height: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            background: #f9f9f9;
+        }
+
+        .swiper-wrapper {
+            align-items: center;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .swiper-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        /* Navegación */
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Paginación */
+        .swiper-pagination-bullet {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: #fff;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* Responsive seguro */
+        @media (max-width: 768px) {
+            .swiper {
+                height: 300px;
+                /* altura fija más baja para móvil */
+            }
+
+            .swiper-button-next,
+            .swiper-button-prev {
+                width: 30px;
+                height: 30px;
+            }
+
+            .swiper-button-next::after,
+            .swiper-button-prev::after {
+                font-size: 16px;
+            }
+
+            .product-form {
+                padding: 20px;
+            }
+
+            .swiper-slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+
+        /* Estilos para el modal de guía de tallas */
+        .size-guide-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: modalopen 0.4s;
+        }
+
+        @keyframes modalopen {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-carousel {
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modal-carousel .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f9f9f9;
+        }
+
+        .modal-carousel img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .size-guide-btn {
+            background: none;
+            border: none;
+            color: var(--terciary-color);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: left;
+            gap: 5px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .size-guide-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+
+            .modal-carousel {
+                height: 300px;
+            }
+        }
     </style>
+
 
 </head>
 
 <body>
-    <header th:insert="~{user/templateUser.html::nav_user_home}"></header>
+    <header th:insert="~{user/templateUser.html::nav_user}"></header>
 
     <main>
         <section class="product-display">
-            <div class="product-image">
-                <img th:src="@{'/images/' + ${product.image}}" alt="Producto" class="product-image">
+            <h1 th:text="${product.name}" class="fuck_title"></h1>
+            <br>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" th:each="image : ${product.images}">
+                        <img th:src="@{'/images/' + ${image}}" th:alt="${product.name}"
+                            onerror="this.src='/images/default.jpg'">
+                    </div>
+                </div>
+                <!-- Controles -->
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
 
             <div class="product-form">
-                <h1 th:text="${product.name}"></h1>
                 <p class="product-description" th:text="${product.description}"></p>
                 <p class="product-price" th:text="${product.price} + '0 $'"></p>
 
                 <form th:if="${product.quantity > 0}" th:action="@{/bordados/carrito/agregar}" method="post"
-                    onsubmit="return validateForm()">
+                    onsubmit="return prepareFormData()">
                     <input type="hidden" name="productId" th:value="${product.id}">
 
                     <!-- Cantidad -->
                     <div class="form-group">
-                        <label>Cantidad</label>
+                        <label>Cantidad (Mínimo: <span th:text="${product.minQuantity}"></span>)</label>
                         <div class="quantity-selector">
                             <button type="button" class="quantity-btn" onclick="updateQuantity(-1)">-</button>
-                            <input type="number" name="quantity" id="quantity" th:max="${product.quantity}" value="1"
-                                min="1" class="quantity-input" required>
+                            <input type="number" name="quantity" id="quantity" th:max="${product.quantity}"
+                                th:min="${product.minQuantity}" th:value="${product.minQuantity}" class="quantity-input"
+                                required>
                             <button type="button" class="quantity-btn" onclick="updateQuantity(1)">+</button>
                         </div>
                     </div>
 
-                    <p th:text="'Disponibles: ' + ${product.quantity}"></p>
+                    <!--<p th:text="'Disponibles: ' + ${product.quantity}"></p>-->
 
-                    <!-- Elige el color -->
-                    <div class="form-group">
-                        <label>Elige el color de tu prenda*</label>
-                        <div class="color-options">
-                            <button th:each="color : ${product.colors}" th:data-color="${color}" class="color-option"
-                                th:style="'background-color: ' + ${color.name()} + ';'" onclick="selectColor(event)">
-                            </button>
+
+                    <div id="selectionContainer">
+                        <div class="selection-block">
+                            <h4>Producto 1</h4>
+                            <input type="hidden" name="colors[0]" id="selectedColor0">
+                            <div class="form-group">
+                                <label>Elige el color de tu prenda*</label>
+                                <div class="color-options">
+                                    <button th:each="color : ${product.colors}" th:data-color="${color}"
+                                        class="color-option"
+                                        th:style="'background-color: ' + ${color.getColorCode()} + ';'"
+                                        onclick="selectColor(event, 0)">
+                                    </button>
+                                </div>
+                                <input type="hidden" name="colors[0]" id="selectedColor0">
+                            </div>
+
+                            <!-- Talla -->
+                            <div class="form-group">
+                                <div class="size-guide-header">
+                                    <label>Elige tu talla*</label>
+                                    <button type="button" class="size-guide-btn" onclick="openSizeGuide()">
+                                        Guía de tallas <i class="fas fa-ruler"></i>
+                                    </button>
+                                </div>
+                                <div class="size-options">
+                                    <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
+                                        onclick="selectSize(event, 0)">
+                                        [[${size}]]
+                                    </button>
+                                </div>
+                                <input type="hidden" name="sizes[0]" id="selectedSize0">
+                            </div>
+
+                            <!-- Ajuste -->
+                            <div class="form-group">
+                                <label>Elige el tipo de ajuste*</label>
+                                <div class="fit-options">
+                                    <button type="button" data-fit="STANDARD" class="fit-option"
+                                        onclick="selectFit(event, 0)">
+                                        Estándar
+                                    </button>
+                                    <button type="button" data-fit="OVERSIZE" class="fit-option"
+                                        onclick="selectFit(event, 0)">
+                                        Oversize
+                                    </button>
+                                </div>
+                                <input type="hidden" name="fits[0]" id="selectedFit0">
+                            </div>
                         </div>
-                        <input type="hidden" name="color" id="selectedColor">
+
+                        <!-- Selección 2 (visible si cantidad mínima es 2) -->
+                        <div class="selection-block" th:if="${product.minQuantity >= 2}">
+                            <h4>Producto 2</h4>
+                            <input type="hidden" name="colors[1]" id="selectedColor1">
+                            <div class="form-group">
+                                <label>Elige el color de tu prenda*</label>
+                                <div class="color-options">
+                                    <button th:each="color : ${product.colors}" th:data-color="${color}"
+                                        class="color-option"
+                                        th:style="'background-color: ' + ${color.getColorCode()} + ';'"
+                                        onclick="selectColor(event, 1)">
+                                    </button>
+                                </div>
+                                <input type="hidden" name="colors[1]" id="selectedColor1">
+                            </div>
+
+                            <div class="form-group">
+                                <div class="size-guide-header">
+                                    <label>Elige tu talla*</label>
+                                    <button type="button" class="size-guide-btn" onclick="openSizeGuide()">
+                                        Guía de tallas <i class="fas fa-ruler"></i>
+                                    </button>
+                                </div>
+                                <div class="size-options">
+                                    <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
+                                        onclick="selectSize(event, 1)">
+                                        [[${size}]]
+                                    </button>
+                                </div>
+                                <input type="hidden" name="sizes[1]" id="selectedSize1">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Elige el tipo de ajuste*</label>
+                                <div class="fit-options">
+                                    <button type="button" data-fit="STANDARD" class="fit-option"
+                                        onclick="selectFit(event, 1)">
+                                        Estándar
+                                    </button>
+                                    <button type="button" data-fit="OVERSIZE" class="fit-option"
+                                        onclick="selectFit(event, 1)">
+                                        Oversize
+                                    </button>
+                                </div>
+                                <input type="hidden" name="fits[1]" id="selectedFit1">
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Elige tu talla -->
-                    <div class="form-group">
-                        <label>Elige tu talla*</label>
-                        <div class="size-options">
-                            <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
-                                onclick="selectSize(event)">
-                                [[${size}]]
-                            </button>
-                        </div>
-                        <input type="hidden" name="size" id="selectedSize">
-                    </div>
 
                     <button type="submit" data-tooltip="Carrito" class="button_int">
                         <div class="button_cart">
@@ -95,188 +393,299 @@
         </section>
 
         <!-- Guía de Tallas -->
-        <section class="size-guide">
-            <h2>Guía de Tallas</h2>
-            <div class="tables-container">
-                <!-- Tabla para Camisas -->
-                <div class="size-table">
-                    <h3>Camisas</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Talla</th>
-                                <th>Ancho (cm)</th>
-                                <th>Largo (cm)</th>
-                                <th>Manga (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S</td>
-                                <td>57</td>
-                                <td>58</td>
-                                <td>68</td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td>59</td>
-                                <td>60</td>
-                                <td>70</td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td>61</td>
-                                <td>62</td>
-                                <td>72</td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td>63</td>
-                                <td>64</td>
-                                <td>74</td>
-                            </tr>
-                            <tr>
-                                <td>2XL</td>
-                                <td>65</td>
-                                <td>66</td>
-                                <td>77</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Tabla para Sudaderas con capucha -->
-                <div class="size-table">
-                    <h3>Sudaderas con Capucha</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Talla</th>
-                                <th>Ancho (cm)</th>
-                                <th>Largo (cm)</th>
-                                <th>Manga (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S</td>
-                                <td>69</td>
-                                <td>62</td>
-                                <td>73</td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td>71</td>
-                                <td>64</td>
-                                <td>75</td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td>73</td>
-                                <td>66</td>
-                                <td>77</td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td>75</td>
-                                <td>68</td>
-                                <td>79</td>
-                            </tr>
-                            <tr>
-                                <td>2XL</td>
-                                <td>77</td>
-                                <td>70</td>
-                                <td>81</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Tabla para Sudaderas -->
-                <div class="size-table">
-                    <h3>Sudaderas</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Talla</th>
-                                <th>Ancho (cm)</th>
-                                <th>Largo (cm)</th>
-                                <th>Manga (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S</td>
-                                <td>69</td>
-                                <td>62</td>
-                                <td>73</td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td>71</td>
-                                <td>64</td>
-                                <td>75</td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td>73</td>
-                                <td>66</td>
-                                <td>77</td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td>75</td>
-                                <td>68</td>
-                                <td>79</td>
-                            </tr>
-                            <tr>
-                                <td>2XL</td>
-                                <td>77</td>
-                                <td>70</td>
-                                <td>81</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div id="sizeGuideModal" class="size-guide-modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeSizeGuide()">&times;</span>
+                <div class="modal-carousel swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img th:src="@{/images/camisas.webp}" alt="Guía de tallas camisas">
+                        </div>
+                        <div class="swiper-slide">
+                            <img th:src="@{/images/capucha.webp}" alt="Guía de tallas capucha">
+                        </div>
+                        <div class="swiper-slide">
+                            <img th:src="@{/images/oversizecapucha.webp}" alt="Guía de tallas oversize">
+                        </div>
+                        <div class="swiper-slide">
+                            <img th:src="@{/images/sincapucha.webp}" alt="Guía de tallas sin capucha">
+                        </div>
+                    </div>
+                    <!-- Controles del carrusel -->
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
 
+        <template id="selectionTemplate">
+            <div class="selection-block">
+                <h4>Producto __index__</h4>
+                <div class="form-group">
+                    <label>Elige el color de tu prenda*</label>
+                    <div class="color-options">
+                        <button th:each="color : ${product.colors}" th:data-color="${color}" class="color-option"
+                            th:style="'background-color: ' + ${color.getColorCode()} + ';'"
+                            onclick="selectColor(event, __index__)">
+                        </button>
+                    </div>
+                    <input type="hidden" name="colors[__index__]" id="selectedColor__index__">
+                </div>
+
+                <div class="form-group">
+                    <div class="size-guide-header">
+                        <label>Elige tu talla*</label>
+                        <button type="button" class="size-guide-btn" onclick="openSizeGuide()">
+                            Guía de tallas <i class="fas fa-ruler"></i>
+                        </button>
+                    </div>
+                    <div class="size-options">
+                        <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
+                            onclick="selectSize(event, __index__)">
+                            [[${size}]]
+                        </button>
+                    </div>
+                    <input type="hidden" name="sizes[__index__]" id="selectedSize__index__">
+                </div>
+
+                <div class="form-group">
+                    <label>Elige el tipo de ajuste*</label>
+                    <div class="fit-options">
+                        <button type="button" data-fit="STANDARD" class="fit-option"
+                            onclick="selectFit(event, __index__)">
+                            Estándar
+                        </button>
+                        <button type="button" data-fit="OVERSIZE" class="fit-option"
+                            onclick="selectFit(event, __index__)">
+                            Oversize
+                        </button>
+                    </div>
+                    <input type="hidden" name="fits[__index__]" id="selectedFit__index__">
+                </div>
+            </div>
+        </template>
+
+    </main>
+    <!-- Faquiiiiiiiiiiii -->
     <footer class="footer" th:insert="~{user/templateUser.html::footer}"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        function updateQuantity(change) {
-            let quantityInput = document.getElementById('quantity');
-            let maxQuantity = parseInt(quantityInput.getAttribute('max'));
-            let newValue = parseInt(quantityInput.value) + change;
-            if (newValue >= 1 && newValue <= maxQuantity) {
-                quantityInput.value = newValue;
+        // Modal de guía de tallas
+        let sizeGuideSwiper;
+
+        function openSizeGuide() {
+            const modal = document.getElementById('sizeGuideModal');
+            modal.style.display = 'block';
+
+            // Inicializar swiper solo una vez
+            if (!sizeGuideSwiper) {
+                sizeGuideSwiper = new Swiper('.modal-carousel', {
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                });
             }
         }
 
-        function selectColor(event) {
-            event.preventDefault();
-            document.querySelectorAll('.color-option').forEach(btn => btn.classList.remove('selected'));
-            event.target.classList.add('selected');
-            document.getElementById('selectedColor').value = event.target.dataset.color;
+        function closeSizeGuide() {
+            document.getElementById('sizeGuideModal').style.display = 'none';
+        }
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.onclick = function (event) {
+            const modal = document.getElementById('sizeGuideModal');
+            if (event.target == modal) {
+                closeSizeGuide();
+            }
         }
 
         function selectSize(event) {
-            event.preventDefault();
-            document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('selected'));
-            event.target.classList.add('selected');
-            document.getElementById('selectedSize').value = event.target.dataset.size;
+            // Remover clase activa de todos los botones
+            document.querySelectorAll('.size-option').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Añadir clase activa al botón seleccionado
+            event.target.classList.add('active');
+
+            // Establecer el valor seleccionado
+            document.getElementById('selectedSize').value = event.target.getAttribute('data-size');
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicialización del carrusel
+            const swiper = new Swiper('.swiper', {
+                // Configuración básica
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+
+                // Efectos
+                effect: 'slide',
+                speed: 600,
+                grabCursor: true,
+
+                // Paginación
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+
+                // Navegación
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+
+                // Eventos
+                on: {
+                    init: function () {
+                        console.log('Carrusel inicializado correctamente');
+                    },
+                }
+            });
+
+            // Pausar al interactuar
+            swiper.el.addEventListener('mouseenter', () => swiper.autoplay.stop());
+            swiper.el.addEventListener('mouseleave', () => swiper.autoplay.start());
+        });
+    </script>
+    <script>
+        document.getElementById('quantity').addEventListener('input', updateSelections);
+
+        const selectedValues = {
+            sizes: [],
+            colors: [],
+            fits: []
+        };
+
+        function updateSelections() {
+            const container = document.getElementById('selectionContainer');
+            const template = document.getElementById('selectionTemplate').innerHTML;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            container.innerHTML = '';
+
+            // Resetear los arrays cuando cambia la cantidad
+            selectedValues.sizes = [];
+            selectedValues.colors = [];
+            selectedValues.fits = [];
+
+            for (let i = 0; i < quantity; i++) {
+                const html = template.replaceAll('__index__', i);
+                container.insertAdjacentHTML('beforeend', html);
+
+                // Inicializar los valores para este índice
+                selectedValues.sizes[i] = '';
+                selectedValues.colors[i] = '';
+                selectedValues.fits[i] = '';
+            }
         }
 
-        function validateForm() {
-            let selectedColor = document.getElementById("selectedColor").value;
-            let selectedSize = document.getElementById("selectedSize").value;
+        function selectColor(event, index) {
+            event.preventDefault();
+            document.querySelectorAll(`#selectedColor${index} ~ .color-options .color-option`).forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById(`selectedColor${index}`).value = event.target.dataset.color;
 
-            if (!selectedColor || !selectedSize) {
-                alert("Por favor, completa todos los campos obligatorios antes de continuar.");
-                return false; // Evita que el formulario se envíe
+            // Actualizar el array de colores
+            selectedValues.colors[index] = event.target.dataset.color;
+        }
+
+        function selectSize(event, index) {
+            event.preventDefault();
+            document.querySelectorAll(`#selectedSize${index} ~ .size-options .size-option`).forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+
+            const sizeValue = event.target.dataset.size.toUpperCase();
+            document.getElementById(`selectedSize${index}`).value = sizeValue;
+            selectedValues.sizes[index] = sizeValue;
+        }
+
+        function selectFit(event, index) {
+            event.preventDefault();
+            document.querySelectorAll(`#selectedFit${index} ~ .fit-options .fit-option`).forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById(`selectedFit${index}`).value = event.target.dataset.fit;
+
+            // Actualizar el array de ajustes
+            selectedValues.fits[index] = event.target.dataset.fit;
+        }
+
+        function prepareFormData() {
+            const form = document.querySelector('form');
+            const quantity = parseInt(document.getElementById('quantity').value);
+
+            console.log("Valores a enviar:", {
+                sizes: selectedValues.sizes,
+                colors: selectedValues.colors,
+                fits: selectedValues.fits
+            });
+
+            // Eliminar inputs antiguos si existen
+            document.querySelectorAll('input[name^="sizes["], input[name^="colors["], input[name^="fits["]').forEach(el => el.remove());
+
+            // Agregar nuevos inputs para cada selección
+            for (let i = 0; i < quantity; i++) {
+                addHiddenInput(form, 'sizes', selectedValues.sizes[i] || '');
+                addHiddenInput(form, 'colors', selectedValues.colors[i] || '');
+                addHiddenInput(form, 'fits', selectedValues.fits[i] || '');
             }
 
-            return true; // Permite que el formulario se envíe
+            return true;
+        }
+
+        function addHiddenInput(form, name, value) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name + '[]'; // Cambiado para usar arrays PHP
+            input.value = value;
+            form.appendChild(input);
+        }
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (!validateForm()) {
+                e.preventDefault();
+                return false;
+            }
+            return prepareFormData();
+        });
+
+        function validateForm() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            let isValid = true;
+
+            for (let i = 0; i < quantity; i++) {
+                // Usar los valores de selectedValues en lugar de buscar en el DOM
+                const color = selectedValues.colors[i];
+                const size = selectedValues.sizes[i];
+                const fit = selectedValues.fits[i];
+
+                if (!color || !size || !fit) {
+                    isValid = false;
+                    alert(`Por favor, completa todas las opciones para el Producto ${i + 1}`);
+                    break;
+                }
+
+                if (fit === 'OVERSIZE' && (size === 'XXL' || size === 'XXXL')) {
+                    isValid = false;
+                    alert(`Error en Producto ${i + 1}: No se puede seleccionar talla ${size} con ajuste Oversize`);
+                    break;
+                }
+            }
+
+            return isValid;
         }
     </script>
     <div th:insert="~{user/templateUser.html::script}"></div>

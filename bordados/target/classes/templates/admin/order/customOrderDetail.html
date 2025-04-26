@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{admin/category/templateAdmin.html::header}"></head>
+
 <body>
 
     <header th:replace="~{admin/category/templateAdmin.html::user_nav}"></header>
@@ -50,7 +52,7 @@
                                     <p><strong>Color:</strong> <span th:text="${detail.color}"></span></p>
                                 </div>
                                 <div class="col-md-3">
-                                    <p><strong>Total:</strong> <span th:text="${detail.quantity * detail.product.price + detail.additionalCost}"></span></p>
+                                    <p><strong>Ajuste:</strong> <span th:text="${detail.fitType?.name()}"></span></p>
                                 </div>
                             </div>
 
@@ -62,13 +64,17 @@
                                         <p><strong>Tipo:</strong> <span th:text="${detail.embroideryType}"></span></p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p><strong>Ubicación:</strong> <span th:text="${detail.firstEmbroideryPlacement}"></span></p>
+                                        <p><strong>Ubicación:</strong> <span
+                                                th:text="${detail.firstEmbroideryPlacement}"></span></p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p><strong>Imagen:</strong> <img th:src="@{'/images/' + ${detail.firstEmbroideryFile}}" width="100" class="img-thumbnail"></p>
+                                        <p><strong>Imagen:</strong> <img
+                                                th:src="@{'/images/' + ${detail.firstEmbroideryFile}}" width="100"
+                                                class="img-thumbnail"></p>
                                     </div>
                                 </div>
-                                <p><strong>Observaciones:</strong> <span th:text="${detail.observationsFirstEmbroidery}"></span></p>
+                                <p><strong>Observaciones:</strong> <span
+                                        th:text="${detail.observationsFirstEmbroidery}"></span></p>
                             </div>
 
                             <!-- Bordado Secundario -->
@@ -76,16 +82,21 @@
                                 <h6>Bordado Secundario</h6>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <p><strong>Tipo:</strong> <span th:text="${detail.secondEmbroideryType}"></span></p>
+                                        <p><strong>Tipo:</strong> <span th:text="${detail.secondEmbroideryType}"></span>
+                                        </p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p><strong>Ubicación:</strong> <span th:text="${detail.secondEmbroideryPlacement}"></span></p>
+                                        <p><strong>Ubicación:</strong> <span
+                                                th:text="${detail.secondEmbroideryPlacement}"></span></p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p><strong>Imagen:</strong> <img th:src="@{'/images/' + ${detail.secondEmbroideryFile}}" width="100" class="img-thumbnail"></p>
+                                        <p><strong>Imagen:</strong> <img
+                                                th:src="@{'/images/' + ${detail.secondEmbroideryFile}}" width="100"
+                                                class="img-thumbnail"></p>
                                     </div>
                                 </div>
-                                <p><strong>Observaciones:</strong> <span th:text="${detail.observationsSecondEmbroidery}"></span></p>
+                                <p><strong>Observaciones:</strong> <span
+                                        th:text="${detail.observationsSecondEmbroidery}"></span></p>
                             </div>
 
                             <!-- Bordado en Manga -->
@@ -99,7 +110,8 @@
                                         <p><strong>Diseño:</strong> <span th:text="${detail.sleeveDesign}"></span></p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p><strong>Color del hilo:</strong> <span th:text="${detail.sleeveThreadColor}"></span></p>
+                                        <p><strong>Color del hilo:</strong> <span
+                                                th:text="${detail.sleeveThreadColor}"></span></p>
                                     </div>
                                 </div>
                             </div>
@@ -111,4 +123,9 @@
 
         <!-- Total de la Orden -->
         <div class="mt-4 text-right">
-            <h4>Total de la Orden: <span class="text-primary" th:text="${orderCustom.total}"></span></
+            <h4>Total de la Orden: <span class="text-primary" th:text="${orderCustom.total}"></span></h4>
+        </div>
+    </div>
+</body>
+
+</html>
