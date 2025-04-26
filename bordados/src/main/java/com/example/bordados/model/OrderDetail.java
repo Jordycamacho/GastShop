@@ -1,5 +1,6 @@
 package com.example.bordados.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.bordados.model.Enums.Color;
@@ -58,7 +59,16 @@ public class OrderDetail {
     @Column(name = "fit_type")
     @Enumerated(EnumType.STRING)
     private List<FitType> fitTypes;
+
+    public void setSizes(List<Size> sizes) {
+        this.sizes = sizes != null ? new ArrayList<>(sizes) : new ArrayList<>();
+    }
+
+    public void setColors(List<Color> colors) {
+        this.colors = colors != null ? new ArrayList<>(colors) : new ArrayList<>();
+    }
+
+    public void setFitTypes(List<FitType> fitTypes) {
+        this.fitTypes = fitTypes != null ? new ArrayList<>(fitTypes) : new ArrayList<>();
+    }
 }
-
-
-

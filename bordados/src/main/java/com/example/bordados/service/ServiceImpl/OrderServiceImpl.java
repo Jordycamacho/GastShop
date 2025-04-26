@@ -167,9 +167,9 @@ public class OrderServiceImpl {
             orderDetail.setOrder(order);
             orderDetail.setProduct(cart.getProduct());
             orderDetail.setQuantity(cart.getQuantity());
-            orderDetail.setSizes(cart.getSizes());
-            orderDetail.setColors(cart.getColors());
-            orderDetail.setFitTypes(cart.getFitTypes());
+            orderDetail.setSizes(new ArrayList<>(cart.getSizes()));
+            orderDetail.setColors(new ArrayList<>(cart.getColors()));
+            orderDetail.setFitTypes(new ArrayList<>(cart.getFitTypes()));
 
             orderDetailRepository.save(orderDetail);
         }
