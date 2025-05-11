@@ -116,7 +116,6 @@ public class DataInitializer implements CommandLineRunner {
             adminUserOther.setRoles(Set.of(adminRole));
             
             userRepository.save(adminUser);
-            userRepository.save(adminUserOther);
         }
     }
 }
