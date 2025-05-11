@@ -351,6 +351,84 @@
                 height: 300px;
             }
         }
+
+
+
+
+        /* Estilos para opciones de ubicación */
+        .placement-option {
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            margin: 5px;
+        }
+
+        .placement-option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            font-weight: bold;
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .placement-option:hover {
+            background-color: #f0f0f0;
+            border-color: #aaa;
+        }
+
+        /* Estilos para opciones de radio */
+        .radio-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .radio-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        /* Estilos para secciones ocultas */
+        .hidden {
+            display: none;
+        }
+
+        /* Estilos para mensajes de error */
+        .error-message {
+            color: red;
+            margin: 10px 0;
+            min-height: 20px;
+        }
+
+        /* Estilos para el botón de pago */
+        .checkout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .checkout-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -378,7 +456,7 @@
                 <p class="product-price" th:text="${product.price} + '0 $'"></p>
 
                 <form th:if="${product.quantity > 0}" th:action="@{/bordados/orden/createCustomOrder}" method="post"
-                    enctype="multipart/form-data" id="main-form">
+                    enctype="multipart/form-data" id="main-form" onsubmit="return validateForm()">
                     <input type="hidden" name="productId" th:value="${product.id}">
                     <!-- Cantidad -->
                     <div class="form-group">
@@ -408,8 +486,6 @@
                                 Guía de tallas <i class="fas fa-ruler"></i>
                             </button>
                         </div>
-
-
                         <div class="size-options">
                             <button th:each="size : ${product.sizes}" th:data-size="${size}" class="size-option"
                                 onclick="selectSize(event)">
@@ -418,14 +494,14 @@
                         </div>
                         <input type="hidden" name="size" id="selectedSize">
                     </div>
-
+                    <!-- Ajuste -->
                     <div class="form-group">
                         <label>Elige el tipo de ajuste*</label>
                         <div class="fit-options">
-                            <button type="button" data-fit="STANDARD" class="size-option" onclick="selectFit(event)">
+                            <button type="button" data-fit="STANDARD" class="fit-option" onclick="selectFit(event)">
                                 Estándar
                             </button>
-                            <button type="button" data-fit="OVERSIZE" class="size-option" onclick="selectFit(event)">
+                            <button type="button" data-fit="OVERSIZE" class="fit-option" onclick="selectFit(event)">
                                 Oversize
                             </button>
                         </div>
@@ -438,13 +514,13 @@
                         <input type="file" name="firstEmbroideryFile" class="file-input" required>
                     </div>
                     <div class="form-group">
-                        <label>¿Qué tamaño de bordado quieres?(El ancho es conforme al diseño)*</label>
+                        <label>¿Qué tamaño de bordado quieres?*</label>
                         <select name="embroideryType" class="form-select" required>
-                            <option value="Pequeño">Pequeño( 8 cm de altura)</option>
-                            <option value="Mediano">Mediano( 15 cm de altura ) +
-                                [[${pricing.mediumSizeFirstEmbroideryPrice}]] EUR</option>
-                            <option value="Grande">Grande( 17 cm de altura) +
-                                [[${pricing.largeSizeFirstEmbroideryPrice}]] EUR</option>
+                            <option value="Pequeño">Pequeño(8cm)</option>
+                            <option value="Mediano">Mediano(15cm) + [[${pricing.mediumSizeFirstEmbroideryPrice}]] EUR
+                            </option>
+                            <option value="Grande">Grande(17cm) + [[${pricing.largeSizeFirstEmbroideryPrice}]] EUR
+                            </option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -452,9 +528,8 @@
                         <div class="placement-options">
                             <button type="button" class="placement-option" data-placement="Lado izquierdo"
                                 onclick="selectPlacement(event, 'firstEmbroideryPlacement')">Lado izquierdo</button>
-                            <button type="button" class="placement-option" data-placement="Medio del
-                            pecho" onclick="selectPlacement(event, 'firstEmbroideryPlacement')">Medio del
-                                pecho</button>
+                            <button type="button" class="placement-option" data-placement="Medio del pecho"
+                                onclick="selectPlacement(event, 'firstEmbroideryPlacement')">Medio del pecho</button>
                             <button type="button" class="placement-option" data-placement="Lado derecho"
                                 onclick="selectPlacement(event, 'firstEmbroideryPlacement')">Lado derecho</button>
                         </div>
@@ -468,7 +543,7 @@
                     </div>
                     <!-- Segundo bordado (opcional) -->
                     <div class="form-group">
-                        <label>¿Quieres un segundo bordado en tu prenda? + [[${pricing.secondDesignPrice}]] EUR</label>
+                        <label>¿Quieres un segundo bordado? + [[${pricing.secondDesignPrice}]] EUR</label>
                         <div class="radio-options">
                             <label><input type="radio" name="hasSecondEmbroidery" value="true"
                                     onclick="toggleSection('second-embroidery-section', true)"> Sí</label>
@@ -476,19 +551,20 @@
                                     onclick="toggleSection('second-embroidery-section', false)" checked> No</label>
                         </div>
                     </div>
+
                     <div id="second-embroidery-section" class="hidden">
                         <div class="form-group">
                             <label>¿Qué segundo diseño quieres bordar?*</label>
                             <input type="file" name="secondEmbroideryFile" class="file-input">
                         </div>
                         <div class="form-group">
-                            <label>¿Qué tamaño de bordado quieres? (El ancho es conforme al diseño)*</label>
-                            <select name="secondEmbroideryType" class="form-select" required>
-                                <option value="Pequeño">Pequeño( 8 cm de altura)</option>
-                                <option value="Mediano">Mediano( 15 cm de altura) +
-                                    [[${pricing.mediumSizeSecondEmbroideryPrice}]] EUR</option>
-                                <option value="Grande">Grande( 17 cm de altura) +
-                                    [[${pricing.largeSizeSecondEmbroideryPrice}]] EUR</option>
+                            <label>¿Qué tamaño de bordado quieres?*</label>
+                            <select name="secondEmbroideryType" class="form-select">
+                                <option value="Pequeño">Pequeño(8cm)</option>
+                                <option value="Mediano">Mediano(15cm) + [[${pricing.mediumSizeSecondEmbroideryPrice}]]
+                                    EUR</option>
+                                <option value="Grande">Grande(17cm) + [[${pricing.largeSizeSecondEmbroideryPrice}]] EUR
+                                </option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -497,13 +573,13 @@
                                 <button type="button" class="placement-option" data-placement="Lado izquierdo"
                                     onclick="selectPlacement(event, 'secondEmbroideryPlacement')">Lado
                                     izquierdo</button>
-                                <button type="button" class="placement-option" data-placement="Medio del
-                                pecho" onclick="selectPlacement(event, 'secondEmbroideryPlacement')">Medio del
+                                <button type="button" class="placement-option" data-placement="Medio del pecho"
+                                    onclick="selectPlacement(event, 'secondEmbroideryPlacement')">Medio del
                                     pecho</button>
                                 <button type="button" class="placement-option" data-placement="Lado derecho"
                                     onclick="selectPlacement(event, 'secondEmbroideryPlacement')">Lado derecho</button>
-                                <button type="button" class="placement-option" data-placement="Hombro
-                                izquierdo" onclick="selectPlacement(event, 'secondEmbroideryPlacement')">Hombro
+                                <button type="button" class="placement-option" data-placement="Hombro izquierdo"
+                                    onclick="selectPlacement(event, 'secondEmbroideryPlacement')">Hombro
                                     izquierdo</button>
                                 <button type="button" class="placement-option" data-placement="Hombro derecho"
                                     onclick="selectPlacement(event, 'secondEmbroideryPlacement')">Hombro
@@ -526,6 +602,7 @@
                                     onclick="toggleSection('sleeve-embroidery-section', false)" checked> No</label>
                         </div>
                     </div>
+
                     <div id="sleeve-embroidery-section" class="hidden">
                         <div class="form-group">
                             <label>¿En qué manga?*</label>
@@ -534,38 +611,36 @@
                                 <label><input type="radio" name="sleeveSide" value="Manga Derecha"> Derecha</label>
                             </div>
                         </div>
-                        <!-- limitar tamaño -->
                         <div class="form-group">
-                            <label>Diseño para la manga *</label>
+                            <label>Diseño para la manga*</label>
                             <input type="text" name="sleeveDesign" class="form-input" maxlength="15">
                         </div>
                         <div class="form-group">
                             <label>Color del hilo*</label>
                             <div class="color-options">
-                                <!-- Colores básicos -->
                                 <button type="button" class="color-option" style="background-color: #000000;"
-                                    data-color="Negro" onclick="selectThreadColor('Negro', '#000000')"></button>
+                                    onclick="selectThreadColor('Negro', '#000000')"></button>
                                 <button type="button" class="color-option"
-                                    style="background-color: #ffffff; border: 1px solid #ddd;" data-color="Blanco"
+                                    style="background-color: #ffffff; border: 1px solid #ddd;"
                                     onclick="selectThreadColor('Blanco', '#ffffff')"></button>
                                 <button type="button" class="color-option" style="background-color: #ff0000;"
-                                    data-color="Rojo" onclick="selectThreadColor('Rojo', '#ff0000')"></button>
+                                    onclick="selectThreadColor('Rojo', '#ff0000')"></button>
                                 <button type="button" class="color-option" style="background-color: #0000ff;"
-                                    data-color="Azul" onclick="selectThreadColor('Azul', '#0000ff')"></button>
+                                    onclick="selectThreadColor('Azul', '#0000ff')"></button>
                                 <button type="button" class="color-option" style="background-color: #008000;"
-                                    data-color="Verde" onclick="selectThreadColor('Verde', '#008000')"></button>
+                                    onclick="selectThreadColor('Verde', '#008000')"></button>
                                 <button type="button" class="color-option" style="background-color: #ffff00;"
-                                    data-color="Amarillo" onclick="selectThreadColor('Amarillo', '#ffff00')"></button>
+                                    onclick="selectThreadColor('Amarillo', '#ffff00')"></button>
                                 <button type="button" class="color-option" style="background-color: #ffa500;"
-                                    data-color="Naranja" onclick="selectThreadColor('Naranja', '#ffa500')"></button>
+                                    onclick="selectThreadColor('Naranja', '#ffa500')"></button>
                                 <button type="button" class="color-option" style="background-color: #800080;"
-                                    data-color="Morado" onclick="selectThreadColor('Morado', '#800080')"></button>
+                                    onclick="selectThreadColor('Morado', '#800080')"></button>
                                 <button type="button" class="color-option" style="background-color: #ffc0cb;"
-                                    data-color="Rosa" onclick="selectThreadColor('Rosa', '#ffc0cb')"></button>
+                                    onclick="selectThreadColor('Rosa', '#ffc0cb')"></button>
                                 <button type="button" class="color-option" style="background-color: #808080;"
-                                    data-color="Gris" onclick="selectThreadColor('Gris', '#808080')"></button>
+                                    onclick="selectThreadColor('Gris', '#808080')"></button>
                                 <button type="button" class="color-option" style="background-color: #40e0d0;"
-                                    data-color="Turquesa" onclick="selectThreadColor('Turquesa', '#40e0d0')"></button>
+                                    onclick="selectThreadColor('Turquesa', '#40e0d0')"></button>
                             </div>
                             <input type="hidden" name="sleeveThreadColor" id="selectedThreadColor">
                         </div>
@@ -575,21 +650,14 @@
                         <p><strong>Total Estimado:</strong> <span id="dynamicTotal">0.00</span> $</p>
                     </div>
 
-                    <!-- nesecita estilos  -->
-                    <div class="form-group">
-                        <a th:href="@{/bordados/producto/preview/{id}(id=${product.id})}" class="preview-button">
-                            ¿Quieres ver cómo quedaría tu bordado?
-                        </a>
-                    </div>
-                    <div id="card-errors" class="error-message" style="color: red; margin: 10px 0;"></div>
+                    <div id="card-errors" class="error-message"></div>
+
                     <div class="payment-section">
                         <h2>Pago con Tarjeta</h2>
                         <div id="card-element"></div>
-                        <div id="card-errors" role="alert"></div>
                         <input type="hidden" name="paymentIntentId" id="paymentIntentId">
                         <button type="submit" class="checkout-btn">Pagar</button>
                     </div>
-
                 </form>
 
                 <p><strong>Total:</strong> <span id="totalAmount">[[${total}]]</span> $</p>
@@ -705,6 +773,7 @@
         let cardElement;
         let currentClientSecret;
         let currentPaymentIntentId;
+
 
         // Función para inicializar Stripe
         function initializeStripeElements() {
@@ -919,13 +988,11 @@
             document.getElementById('main-form').addEventListener('submit', handleSubmit);
         });
 
-
-
-
         function updateQuantity(change) {
-            let quantityInput = document.getElementById('quantity');
-            let maxQuantity = parseInt(quantityInput.getAttribute('max'));
-            let newValue = parseInt(quantityInput.value) + change;
+            const quantityInput = document.getElementById('quantity');
+            const maxQuantity = parseInt(quantityInput.getAttribute('max'));
+            const newValue = parseInt(quantityInput.value) + change;
+
             if (newValue >= 1 && newValue <= maxQuantity) {
                 quantityInput.value = newValue;
             }
@@ -947,8 +1014,8 @@
             const selectedFit = document.getElementById('selectedFit').value;
             if (selectedFit === 'OVERSIZE' && (event.target.dataset.size === 'XXL' || event.target.dataset.size === 'XXXL')) {
                 alert('No se puede seleccionar talla ' + event.target.dataset.size + ' con ajuste Oversize');
-                document.getElementById('selectedSize').value = '';
-                event.target.classList.remove('selected');
+                document.getElementById('selectedFit').value = '';
+                document.querySelectorAll('.fit-option').forEach(btn => btn.classList.remove('selected'));
             }
         }
 
@@ -958,19 +1025,19 @@
             event.target.classList.add('selected');
             document.getElementById('selectedFit').value = event.target.dataset.fit;
 
-            if (event.target.dataset.fit === 'OVERSIZE') {
-                const selectedSize = document.getElementById('selectedSize').value;
-                if (selectedSize === 'XXL' || selectedSize === 'XXXL') {
-                    alert('No se puede seleccionar talla ' + selectedSize + ' con ajuste Oversize');
-                    document.getElementById('selectedSize').value = '';
-                    document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('selected'));
-                }
+            // Validar talla si es Oversize con XXL/XXXL
+            const selectedSize = document.getElementById('selectedSize').value;
+            if (event.target.dataset.fit === 'OVERSIZE' && (selectedSize === 'XXL' || selectedSize === 'XXXL')) {
+                alert('No se puede seleccionar ajuste Oversize con talla ' + selectedSize);
+                document.getElementById('selectedSize').value = '';
+                document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('selected'));
             }
         }
 
         function selectPlacement(event, inputId) {
             event.preventDefault();
-            document.querySelectorAll('.placement-option').forEach(btn => btn.classList.remove('selected'));
+            const allOptions = event.target.parentElement.querySelectorAll('.placement-option');
+            allOptions.forEach(btn => btn.classList.remove('selected'));
             event.target.classList.add('selected');
             document.getElementById(inputId).value = event.target.dataset.placement;
         }
@@ -985,78 +1052,77 @@
             document.getElementById(sectionId).style.display = show ? "block" : "none";
         }
 
-        function validateForm(event) {
-            let selectedColor = document.getElementById("selectedColor").value;
-            let selectedSize = document.getElementById("selectedSize").value;
-            let selectedFit = document.getElementById("selectedFit").value;
-            let firstEmbroideryFile = document.querySelector('input[name="firstEmbroideryFile"]').files.length > 0;
-            let embroideryType = document.querySelector('select[name="embroideryType"]').value;
-            let firstEmbroideryPlacement = document.getElementById("firstEmbroideryPlacement").value;
-
-            let hasSecondEmbroidery = document.querySelector('input[name="hasSecondEmbroidery"]:checked').value === 'true';
-            let secondEmbroideryFile = document.querySelector('input[name="secondEmbroideryFile"]').files.length > 0;
-            let secondEmbroideryType = document.querySelector('select[name="secondEmbroideryType"]').value;
-            let secondEmbroideryPlacement = document.getElementById("secondEmbroideryPlacement").value;
-
-            if (!selectedColor || !selectedSize || !selectedFit || !firstEmbroideryFile || !embroideryType || !firstEmbroideryPlacement) {
-                event.preventDefault();
-                alert("Por favor, completa todos los campos requeridos antes de continuar.");
-            }
-
-            if (hasSecondEmbroidery && (!secondEmbroideryFile || !secondEmbroideryType || !secondEmbroideryPlacement)) {
-                event.preventDefault();
-                alert("Por favor, completa todos los campos del segundo bordado antes de continuar.");
-            }
-        }
-
         function validateForm() {
             let isValid = true;
             const errorContainer = document.getElementById('card-errors');
             errorContainer.textContent = '';
 
-            const selectedColor = document.getElementById('selectedColor').value;
-            const selectedSize = document.getElementById('selectedSize').value;
-            const selectedFit = document.getElementById('selectedFit').value;
-            const firstEmbroideryFile = document.querySelector('input[name="firstEmbroideryFile"]').files[0];
+            // Validar campos básicos
+            if (!document.getElementById('selectedColor').value) {
+                isValid = false;
+                errorContainer.textContent += '• Selecciona un color para la prenda\n';
+            }
+
+            if (!document.getElementById('selectedSize').value) {
+                isValid = false;
+                errorContainer.textContent += '• Selecciona una talla\n';
+            }
+
+            if (!document.getElementById('selectedFit').value) {
+                isValid = false;
+                errorContainer.textContent += '• Selecciona un tipo de ajuste\n';
+            }
+
+            // Validar primer bordado
+            if (!document.querySelector('input[name="firstEmbroideryFile"]').files[0]) {
+                isValid = false;
+                errorContainer.textContent += '• Sube un diseño para el primer bordado\n';
+            }
+
+            if (!document.getElementById('firstEmbroideryPlacement').value) {
+                isValid = false;
+                errorContainer.textContent += '• Selecciona una ubicación para el primer bordado\n';
+            }
+
+            // Validar segundo bordado si está activo
             const hasSecondEmbroidery = document.querySelector('input[name="hasSecondEmbroidery"]:checked').value === 'true';
-            const secondEmbroideryFile = hasSecondEmbroidery ? document.querySelector('input[name="secondEmbroideryFile"]').files[0] : null;
+            if (hasSecondEmbroidery) {
+                if (!document.querySelector('input[name="secondEmbroideryFile"]').files[0]) {
+                    isValid = false;
+                    errorContainer.textContent += '• Sube un diseño para el segundo bordado\n';
+                }
 
-            // Validar campos requeridos
-            if (!selectedColor) {
-                isValid = false;
-                errorContainer.textContent += 'Selecciona un color\n';
+                if (!document.getElementById('secondEmbroideryPlacement').value) {
+                    isValid = false;
+                    errorContainer.textContent += '• Selecciona una ubicación para el segundo bordado\n';
+                }
             }
 
-            if (!selectedSize) {
-                isValid = false;
-                errorContainer.textContent += 'Selecciona una talla\n';
-            }
+            // Validar bordado en manga si está activo
+            const hasSleeveEmbroidery = document.querySelector('input[name="hasSleeveEmbroidery"]:checked').value === 'true';
+            if (hasSleeveEmbroidery) {
+                if (!document.querySelector('input[name="sleeveSide"]:checked')) {
+                    isValid = false;
+                    errorContainer.textContent += '• Selecciona un lado para el bordado de manga\n';
+                }
 
-            if (!selectedFit) {
-                isValid = false;
-                errorContainer.textContent += 'Selecciona un tipo de ajuste\n';
-            }
+                if (!document.querySelector('input[name="sleeveDesign"]').value) {
+                    isValid = false;
+                    errorContainer.textContent += '• Ingresa un diseño para el bordado de manga\n';
+                }
 
-            if (!firstEmbroideryFile) {
-                isValid = false;
-                errorContainer.textContent += 'Sube un diseño para el primer bordado\n';
-            }
-
-            if (hasSecondEmbroidery && !secondEmbroideryFile) {
-                isValid = false;
-                errorContainer.textContent += 'Sube un diseño para el segundo bordado\n';
-            }
-
-            if (selectedFit === 'OVERSIZE' && (selectedSize === 'XXL' || selectedSize === 'XXXL')) {
-                isValid = false;
-                errorContainer.textContent += 'No se puede seleccionar talla ' + selectedSize + ' con ajuste Oversize\n';
+                if (!document.getElementById('selectedThreadColor').value) {
+                    isValid = false;
+                    errorContainer.textContent += '• Selecciona un color de hilo para el bordado de manga\n';
+                }
             }
 
             if (!isValid) {
-                alert(errorContainer.textContent);
+                alert('Por favor completa los siguientes campos:\n\n' + errorContainer.textContent);
+                return false;
             }
 
-            return isValid;
+            return true;
         }
 
     </script>

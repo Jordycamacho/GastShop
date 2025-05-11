@@ -1177,6 +1177,7 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
+
 .product-image {
     flex: 1;
     min-width: 300px;
@@ -1198,7 +1199,8 @@ body {
 }
 
 .product-form {
-    margin-left: -10px; /* Reduce la separación */
+    margin-left: -10px;
+    /* Reduce la separación */
     padding-left: 30px;
     border-left: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -1494,6 +1496,7 @@ body {
     padding: 2px 5px;
     border-radius: 3px;
 }
+
 .quantity-btn {
     background-color: black;
     color: white;
@@ -2149,9 +2152,11 @@ body {
         padding-left: 5px;
         transition: all 0.3s ease;
     }
+
     .nav-item-with-icon:hover a span {
         text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
     }
+
     .nav-links {
         display: none;
         flex-direction: column;
@@ -2177,6 +2182,7 @@ body {
         margin: 0;
         transition: all 0.3s ease;
     }
+
     .nav-links li:hover {
         background: rgba(255, 255, 255, 0.05);
     }
@@ -2212,18 +2218,20 @@ body {
     }
 
     /* Dropdowns mejorados */
-    .dropdown-menu, .dropdown-submenu {
+    .dropdown-menu,
+    .dropdown-submenu {
         background: rgba(0, 0, 0, 0.3) !important;
         backdrop-filter: blur(10px);
         border-left: 2px solid #00d9ff;
     }
 
-    .dropdown-menu a, .dropdown-submenu a {
+    .dropdown-menu a,
+    .dropdown-submenu a {
         padding-left: 35px !important;
     }
 
     /* Botón de hamburguesa mejorado (si quieres) */
- 
+
 
     /*home Image*/
 
@@ -2298,15 +2306,18 @@ body {
         margin: 20px auto;
     }
 
-    .product-gallery, .product-form {
+    .product-gallery,
+    .product-form {
         margin: 0;
         border: none;
         border-radius: 10px;
         padding: 20px;
     }
+
     .swiper {
         height: 350px;
     }
+
     .tables-container {
         flex-direction: column;
     }
@@ -2479,5 +2490,192 @@ body {
     .inputForm svg {
         width: 16px;
         height: 16px;
+    }
+}
+
+/*Ajustes extra de formulario*/
+
+
+@keyframes modalopen {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.modal-carousel {
+    width: 100%;
+    height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.modal-carousel .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f9f9f9;
+}
+
+.modal-carousel img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.size-guide-btn {
+    background: none;
+    border: none;
+    color: var(--terciary-color);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: left;
+    gap: 5px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.size-guide-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos para opciones seleccionadas */
+.color-option.selected {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--primary-color);
+    border-radius: 50%;
+}
+
+.size-option.selected,
+.fit-option.selected {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Estilos base para opciones */
+.color-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.size-options,
+.fit-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.size-option,
+.fit-option {
+    padding: 8px 15px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.size-option:hover,
+.fit-option:hover {
+    border-color: #aaa;
+}
+
+/* Estilos mejorados para opciones seleccionadas */
+.color-option.selected {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--primary-color);
+    border: 2px solid #333;
+    /* Borde oscuro para contraste */
+    position: relative;
+}
+
+/* Efecto adicional para colores claros */
+.color-option.selected[style*="background-color: white"],
+.color-option.selected[style*="background-color: #fff"],
+.color-option.selected[style*="background-color: rgb(255,255,255)"],
+.color-option.selected[style*="background-color: light"] {
+    box-shadow: 0 0 0 3px #333, 0 0 0 6px var(--primary-color);
+    border: 2px solid #000;
+}
+
+/* Efecto "pulsado" para las opciones de talla y ajuste */
+.size-option.selected,
+.fit-option.selected {
+    background-color: var(--primary-color);
+    color: black !important;
+    border-color: var(--primary-color);
+    font-weight: bold;
+    transform: translateY(2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Mantenemos los hover pero menos prominentes que las selecciones */
+.color-option:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.size-option:hover,
+.fit-option:hover {
+    background-color: #f0f0f0;
+    border-color: #aaa;
+    color: #000;
+}
+
+/* Efecto especial para hover en seleccionados */
+.color-option.selected:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--primary-color);
+}
+
+.size-option.selected:hover,
+.fit-option.selected:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(2px) scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 10% auto;
+        width: 95%;
+    }
+
+    .modal-carousel {
+        height: 300px;
     }
 }
